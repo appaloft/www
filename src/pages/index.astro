@@ -1,0 +1,315 @@
+---
+import "../styles/global.css";
+
+const features = [
+  {
+    title: "Source becomes a resource profile",
+    body: "Local workspaces, Git repositories, GitHub sources, zip archives, Docker images, Compose bundles, and static outputs normalize into resource-owned source, runtime, network, and health configuration.",
+    icon: "source",
+  },
+  {
+    title: "Deployments stay ids-only",
+    body: "The deployment command accepts project, environment, resource, server, and destination context. Build commands, ports, domains, and TLS intent live with the owner that can verify them.",
+    icon: "ids",
+  },
+  {
+    title: "Environment snapshots are immutable",
+    body: "Configuration precedence is explicit, secret values are masked, and every deployment can carry the environment state it actually used.",
+    icon: "snapshot",
+  },
+  {
+    title: "Docker and OCI are the v1 substrate",
+    body: "Runtime planning produces or resolves container artifacts for apps, static sites, images, and Compose workloads while keeping future runtime targets behind the same boundary.",
+    icon: "container",
+  },
+  {
+    title: "Access and TLS are resource-scoped",
+    body: "Generated access, proxy route status, custom domains, certificate requests, runtime logs, health, and diagnostics belong to resource and routing read models, not hidden UI state.",
+    icon: "route",
+  },
+  {
+    title: "The web console is a client",
+    body: "CLI, HTTP, oRPC, and future MCP tools dispatch the same command and query contracts. The static console consumes contracts; it does not invent business rules.",
+    icon: "contracts",
+  },
+];
+
+const loop = [
+  ["detect", "Inspect source evidence, resource profile, target capability, and workload shape before making runtime choices."],
+  ["plan", "Resolve build, package, access, proxy, and execution intent into a provider-neutral runtime plan."],
+  ["execute", "Apply the plan through the selected runtime target backend, starting with single-server Docker and Compose."],
+  ["verify", "Observe deployment progress, generated access, resource health, logs, proxy state, and diagnostics."],
+  ["rollback", "Keep rollback intent in the release orchestration model so failure paths stay explicit instead of improvised."],
+];
+
+const interfaces = [
+  ["CLI", "Interactive deploys, headless SSH/server state flows, doctor checks, environment commands, runtime logs, and operator terminals."],
+  ["HTTP + oRPC", "Typed business transport for API routes, OpenAPI REST routes, frontend clients, and future automation contracts."],
+  ["Static console", "A browser client for projects, resources, deployments, domains, logs, health, and diagnostics over the shared backend contracts."],
+];
+
+function icon(name: string) {
+  const paths: Record<string, string> = {
+    source: '<path d="M5 8.5h14M5 15.5h8M8 4h8l4 4v12H4V4h4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    ids: '<path d="M5 7h14M5 12h14M5 17h9M15 17l2 2 3-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    snapshot: '<path d="M7 4h10l3 3v13H4V4h3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 13h8M8 17h5M16 4v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    container: '<path d="M4 8l8-4 8 4-8 4-8-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 8v8l8 4 8-4V8M12 12v8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+    route: '<path d="M6 6h4v4H6V6ZM14 14h4v4h-4v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8h3a3 3 0 0 1 3 3v3M8 10v1a5 5 0 0 0 5 5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+    contracts: '<path d="M5 5h14v14H5V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h5M16 13l2 2-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+  };
+
+  return paths[name] ?? paths.source;
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Appaloft is an AI-native local-to-cloud deployment platform for developers deploying local workspaces, repositories, archives, images, and Compose bundles onto their own servers." />
+    <meta name="theme-color" content="#080B0A" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Appaloft - deployment control for your own servers</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <header class="hero">
+        <img class="hero-background" src="/images/appaloft-hero-control-plane.jpg" alt="" aria-hidden="true" />
+        <nav class="nav" aria-label="Main navigation">
+          <a class="brand" href="/" aria-label="Appaloft home">
+            <span class="brand-mark" aria-hidden="true">A</span>
+            <span>Appaloft</span>
+          </a>
+          <div class="nav-links">
+            <a href="#platform">Platform</a>
+            <a href="#loop">Loop</a>
+            <a href="#model">Model</a>
+            <a href="#interfaces">Interfaces</a>
+          </div>
+          <a class="nav-cta" href="https://github.com/appaloft/appaloft">GitHub</a>
+        </nav>
+        <div class="hero-inner">
+          <p class="eyebrow">AI-native deployment control plane</p>
+          <h1>Deploy local work to your own servers with a real control loop.</h1>
+          <p class="hero-lede">
+            Appaloft turns source, environments, resources, and deployment targets into an explicit
+            detect -> plan -> execute -> verify lifecycle. CLI, HTTP, oRPC, and the static console share
+            the same business contracts.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button button-primary" href="https://github.com/appaloft/appaloft">View source</a>
+            <a class="button button-secondary" href="https://github.com/appaloft/appaloft/tree/main/docs">Read docs</a>
+          </div>
+          <div class="hero-proof" aria-label="Platform highlights">
+            <span class="proof-pill">CLI-first</span>
+            <span class="proof-pill">Static console</span>
+            <span class="proof-pill">PostgreSQL + PGlite</span>
+            <span class="proof-pill">Docker/OCI runtime</span>
+          </div>
+        </div>
+      </header>
+
+      <main id="main">
+        <section class="signal-strip" aria-label="Core platform signals">
+          <div class="signal-grid">
+            <div class="signal">
+              <strong>Backend first</strong>
+              <span>The web UI is a client, not the place where deployment rules live.</span>
+            </div>
+            <div class="signal">
+              <strong>Owner scoped</strong>
+              <span>Projects collect resources; resources own deploy actions, history, access, logs, and health.</span>
+            </div>
+            <div class="signal">
+              <strong>Self-host ready</strong>
+              <span>Run with PostgreSQL for hosted installs or embedded PGlite for local-first single instances.</span>
+            </div>
+            <div class="signal">
+              <strong>Tool ready</strong>
+              <span>Business operations are modeled for CLI, HTTP, web, automation, and future MCP tools.</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="platform" class="section">
+          <div class="wrap">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">Platform</p>
+                <h2>Deployment primitives that do not change shape between UI, API, and automation.</h2>
+              </div>
+              <p>
+                Appaloft keeps source selection, resource profiles, environment snapshots, runtime targets,
+                routing, TLS, logs, and health in explicit bounded contexts.
+              </p>
+            </div>
+
+            <div class="feature-grid">
+              {features.map((feature) => (
+                <article class="feature-card">
+                  <span class="icon-box" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" set:html={icon(feature.icon)}></svg>
+                  </span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="loop" class="section section-dark">
+          <div class="wrap loop-layout">
+            <div>
+              <p class="kicker">Deployment loop</p>
+              <h2>Detect, plan, execute, verify, and keep the failure path explicit.</h2>
+              <p class="section-lede">
+                The runtime pipeline is not a black box behind a deploy button. A deployment is an accepted
+                attempt with context references, plan snapshots, progress, runtime observation, and support-ready diagnostics.
+              </p>
+              <div class="loop-list" aria-label="Deployment lifecycle">
+                {loop.map(([name, body], index) => (
+                  <article class="loop-step">
+                    <code>{String(index + 1).padStart(2, "0")}</code>
+                    <div>
+                      <h3>{name}</h3>
+                      <p>{body}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <figure class="loop-image">
+              <img src="/images/appaloft-deployment-loop.jpg" alt="Generated technical diagram of a deployment loop around self-hosted servers" loading="lazy" />
+            </figure>
+          </div>
+        </section>
+
+        <section id="model" class="section section-soft">
+          <div class="wrap">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">Domain model</p>
+                <h2>The project-facing path is simple because ownership is precise.</h2>
+              </div>
+              <p>
+                The core flow is Project -> Environment -> Resource -> Deployment. The resource is the deployable unit;
+                the deployment is the attempt record.
+              </p>
+            </div>
+            <div class="map" aria-label="Project to deployment model">
+              <article class="map-cell">
+                <small>01</small>
+                <h3>Project</h3>
+                <p>Top-level workspace and resource collection boundary for teams, resources, and rollup views.</p>
+              </article>
+              <article class="map-cell">
+                <small>02</small>
+                <h3>Environment</h3>
+                <p>Configuration scope with precedence, masked secrets, promotion, diffing, and deployment snapshots.</p>
+              </article>
+              <article class="map-cell">
+                <small>03</small>
+                <h3>Resource</h3>
+                <p>Deployable unit that owns source, runtime, network, health, access, logs, diagnostics, and domains.</p>
+              </article>
+              <article class="map-cell">
+                <small>04</small>
+                <h3>Deployment</h3>
+                <p>Execution attempt that resolves the resource profile against a selected destination and target backend.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section-dark">
+          <div class="wrap contrast-layout">
+            <div>
+              <p class="kicker">Positioning</p>
+              <h2>Familiar PaaS ergonomics, with deployment state close to the servers you operate.</h2>
+              <p class="section-lede">
+                Appaloft borrows the useful parts of modern PaaS workflows: repository-driven deploys,
+                generated access, environment configuration, logs, health, and API automation. The difference is
+                that the contracts are explicit and the self-hosted path is not a second-class mode.
+              </p>
+            </div>
+            <div class="contrast-list">
+              <article class="contrast-item">
+                <h3>For local and headless deploys</h3>
+                <p>CLI and GitHub Actions flows can deploy to SSH targets with Appaloft state on the server instead of assuming a hosted control plane is always present.</p>
+              </article>
+              <article class="contrast-item">
+                <h3>For operators</h3>
+                <p>Proxy configuration previews, resource health, runtime logs, terminal sessions, and diagnostic summaries are resource-owned observation surfaces.</p>
+              </article>
+              <article class="contrast-item">
+                <h3>For future tools</h3>
+                <p>Commands and queries are cataloged operations, so AI agents and MCP tools can reuse the same boundaries as the CLI and API.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="interfaces" class="section">
+          <div class="wrap">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">Interfaces</p>
+                <h2>One operation catalog, multiple first-class entry points.</h2>
+              </div>
+              <p>
+                CLI, API, and Web do not compete for ownership. Each interface dispatches command and query messages
+                through the same application surface.
+              </p>
+            </div>
+            <div class="interface-grid">
+              {interfaces.map(([name, body]) => (
+                <article class="interface">
+                  <h3>{name}</h3>
+                  <p>{body}</p>
+                </article>
+              ))}
+            </div>
+            <div class="terminal" aria-label="Example deployment flow">
+              <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+              <pre><code><span class="muted">$</span> appaloft deploy ./service
+<span class="accent">detect</span>   source profile, framework evidence, target capability
+<span class="accent">plan</span>     Docker/OCI artifact, network profile, access route
+<span class="accent">execute</span>  selected runtime target backend
+<span class="accent">verify</span>   resource health, logs, generated access, diagnostics</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="section cta">
+          <div class="wrap cta-inner">
+            <div>
+              <p class="kicker">Build from the contracts</p>
+              <h2>Start with the operation map, then ship through Astro, CLI, API, or future tools.</h2>
+              <p>
+                The current source of truth lives in the Appaloft docs: core operations, domain model,
+                decision records, workflows, errors, and test matrices.
+              </p>
+            </div>
+            <div class="hero-actions">
+              <a class="button button-primary" href="https://github.com/appaloft/appaloft/tree/main/docs">Open docs</a>
+              <a class="button button-secondary" href="https://github.com/appaloft/appaloft">GitHub repo</a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="wrap footer-inner">
+          <span>Appaloft. Deployment control for your own servers.</span>
+          <div class="footer-links">
+            <a href="https://github.com/appaloft/appaloft">GitHub</a>
+            <a href="https://github.com/appaloft/appaloft/tree/main/docs">Docs</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
