@@ -18,8 +18,6 @@ access:
     - host: appaloft.com
       pathPrefix: /
       tlsMode: auto
-      redirectTo: www.appaloft.com
-      redirectStatus: 308
 
 env:
   HOST: 0.0.0.0

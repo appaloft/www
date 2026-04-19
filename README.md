@@ -28,8 +28,7 @@ Required GitHub repository secrets:
 - `APPALOFT_SSH_PRIVATE_KEY`: private key for the target server
 - `APPALOFT_BETTER_AUTH_SECRET`: Better Auth runtime secret
 
-`appaloft.yml` deploys the Astro standalone server to `www.appaloft.com` and redirects
-`appaloft.com` to `www.appaloft.com` with HTTP 308.
+`appaloft.yml` deploys the Astro standalone server to `www.appaloft.com` and `appaloft.com`.
 
 ## i18n and auth
 
