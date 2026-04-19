@@ -29,6 +29,11 @@ const configuredConsoleHref = ((import.meta.env.PUBLIC_APPALOFT_CONSOLE_URL as s
 const consoleHref = configuredConsoleHref
   ? configuredConsoleHref.replace(/\/+$/, "") || "/"
   : "/deploy";
+const canonicalHref = new URL(localePath(locale), Astro.url.origin).href;
+const alternateHrefs = appaloftLocales.map((nextLocale) => ({
+  href: new URL(localePath(nextLocale), Astro.url.origin).href,
+  locale: nextLocale,
+}));
 const initialIdentity = Astro.locals.user?.name || Astro.locals.user?.email || null;
 const initialAuthStatus = initialIdentity ? `${copy.auth.signedIn}: ${initialIdentity}` : copy.auth.signedOut;
 const installCommandParts = copy.hero.installCommand.split(" ");
@@ -110,16 +115,18 @@ function highlightScenarioLine(line: string, badge: string) {
     <meta name="description" content={copy.meta.description} />
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {appaloftLocales.map((nextLocale) => (
-      <link rel="alternate" hreflang={nextLocale} href={localePath(nextLocale)} />
+    <link rel="canonical" href={canonicalHref} />
+    {alternateHrefs.map(({ href, locale: nextLocale }) => (
+      <link rel="alternate" hreflang={nextLocale} href={href} />
     ))}
+    <link rel="alternate" hreflang="x-default" href={alternateHrefs[0].href} />
     <title>{copy.meta.title}</title>
   </head>
   <body>
     <a class="skip-link" href="#main">{copy.skipLink}</a>
     <div class="site-shell">
       <header class="hero">
-        <img class="hero-background" src="/images/appaloft-hero-cloud.jpg" alt="" aria-hidden="true" />
+        <div class="hero-background" aria-hidden="true"></div>
         <nav class="nav" aria-label={copy.nav.label}>
           <a class="brand" href={localePath(locale)} aria-label={copy.nav.home}>
             <span class="brand-mark" aria-hidden="true">A</span>
@@ -388,8 +395,7 @@ function highlightScenarioLine(line: string, badge: string) {
     </div>
 
     <script>
-      import "../scripts/auth-widget";
-      import "../scripts/home-actions";
+      import "../scripts/page-actions";
     </script>
   </body>
 </html>

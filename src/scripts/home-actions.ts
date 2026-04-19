@@ -5,8 +5,12 @@ function initDomainDemo(demo: HTMLElement) {
   let isIntersecting = false;
   let observer: IntersectionObserver | undefined;
 
+  function canStart() {
+    return document.visibilityState === "visible" && isIntersecting;
+  }
+
   function tryStart() {
-    if (hasStarted || document.visibilityState !== "visible" || !isIntersecting) {
+    if (hasStarted || !canStart()) {
       return;
     }
 
@@ -14,6 +18,7 @@ function initDomainDemo(demo: HTMLElement) {
     demo.classList.add("is-running");
     observer?.disconnect();
     document.removeEventListener("visibilitychange", tryStart);
+    window.removeEventListener("focus", tryStart);
   }
 
   if ("IntersectionObserver" in window) {
@@ -30,6 +35,7 @@ function initDomainDemo(demo: HTMLElement) {
   }
 
   document.addEventListener("visibilitychange", tryStart);
+  window.addEventListener("focus", tryStart);
   tryStart();
 }
 

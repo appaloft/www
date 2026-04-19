@@ -1,13 +1,16 @@
 import i18next from "i18next";
 
+export {
+  appaloftLocaleCookieMaxAge,
+  appaloftLocaleCookieName,
+  appaloftLocaleHeader,
+  appaloftLocaleStorageKey,
+} from "./locale-constants";
+
 export const appaloftLocales = ["zh-CN", "en-US"] as const;
 export type AppaloftLocale = (typeof appaloftLocales)[number];
 
 export const defaultAppaloftLocale: AppaloftLocale = "zh-CN";
-export const appaloftLocaleStorageKey = "appaloft.locale";
-export const appaloftLocaleCookieName = appaloftLocaleStorageKey;
-export const appaloftLocaleCookieMaxAge = 60 * 60 * 24 * 365;
-export const appaloftLocaleHeader = "x-appaloft-locale";
 
 export function normalizeAppaloftLocale(input?: string | null): AppaloftLocale {
   const value = input?.trim();

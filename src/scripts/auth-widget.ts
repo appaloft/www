@@ -4,7 +4,7 @@ import {
   appaloftLocaleCookieName,
   appaloftLocaleHeader,
   appaloftLocaleStorageKey,
-} from "../lib/i18n";
+} from "../lib/locale-constants";
 
 type AuthCopy = {
   connectGithub: string;
