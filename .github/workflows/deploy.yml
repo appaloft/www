@@ -26,8 +26,8 @@ jobs:
         with:
           version: v0.2.1
           config: appaloft.yml
-          source: .
-          ssh-host: ${{ vars.APPALOFT_SSH_HOST }}
-          ssh-user: ${{ vars.APPALOFT_SSH_USER }}
-          ssh-private-key: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
-          server-proxy-kind: traefik
+          path-or-source: .
+          target-host: ${{ vars.APPALOFT_SSH_HOST }}
+          target-ssh-username: ${{ vars.APPALOFT_SSH_USER }}
+          target-private-key: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+          target-proxy-kind: traefik
