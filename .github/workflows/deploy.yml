@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: appaloft-www-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy with Appaloft
+        uses: appaloft/deploy-action@v1
+        env:
+          APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
+        with:
+          version: v0.2.1
+          config: appaloft.yml
+          source: .
+          ssh-host: ${{ vars.APPALOFT_SSH_HOST }}
+          ssh-user: ${{ vars.APPALOFT_SSH_USER }}
+          ssh-private-key: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+          server-proxy-kind: traefik

@@ -1,0 +1,36 @@
+runtime:
+  strategy: workspace-commands
+  installCommand: bun install --frozen-lockfile
+  buildCommand: bun run build
+  startCommand: bun ./dist/server/entry.mjs
+  healthCheckPath: /
+
+network:
+  internalPort: 4321
+  upstreamProtocol: http
+  exposureMode: reverse-proxy
+
+access:
+  domains:
+    - host: www.appaloft.com
+      pathPrefix: /
+      tlsMode: auto
+    - host: appaloft.com
+      pathPrefix: /
+      tlsMode: auto
+      redirectTo: www.appaloft.com
+      redirectStatus: 308
+
+env:
+  HOST: 0.0.0.0
+  PORT: "4321"
+  APPALOFT_BETTER_AUTH_URL: https://www.appaloft.com
+  APPALOFT_BETTER_AUTH_COOKIE_DOMAIN: .appaloft.com
+  APPALOFT_BETTER_AUTH_TRUSTED_ORIGINS: https://www.appaloft.com,https://appaloft.com
+  APPALOFT_BETTER_AUTH_TRUSTED_PROXY_HEADERS: "true"
+  APPALOFT_LOCALE_COOKIE_DOMAIN: .appaloft.com
+
+secrets:
+  APPALOFT_BETTER_AUTH_SECRET:
+    from: ci-env:APPALOFT_BETTER_AUTH_SECRET
+    required: true

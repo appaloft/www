@@ -13,6 +13,24 @@ bun run preview
 
 Generated image assets live in `public/images/`.
 
+## Production deployment
+
+Production deploys are handled by `.github/workflows/deploy.yml` with `appaloft/deploy-action@v1`
+and Appaloft CLI `v0.2.1`.
+
+Required GitHub repository variables:
+
+- `APPALOFT_SSH_HOST`: `107.173.15.220`
+- `APPALOFT_SSH_USER`: SSH login user for the target server
+
+Required GitHub repository secrets:
+
+- `APPALOFT_SSH_PRIVATE_KEY`: private key for the target server
+- `APPALOFT_BETTER_AUTH_SECRET`: Better Auth runtime secret
+
+`appaloft.yml` deploys the Astro standalone server to `www.appaloft.com` and redirects
+`appaloft.com` to `www.appaloft.com` with HTTP 308.
+
 ## i18n and auth
 
 - locale copy is served through `i18next`
