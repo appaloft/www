@@ -22,6 +22,7 @@ jobs:
       - name: Deploy with Appaloft
         uses: appaloft/deploy-action@v1
         env:
+          APPALOFT_APP_VERSION: "0.2.1"
           APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
         with:
           version: v0.2.1
