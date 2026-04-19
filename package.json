@@ -9,6 +9,16 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^6.1.8"
+    "@astrojs/node": "^10.0.5",
+    "astro": "^6.1.8",
+    "better-auth": "^1.6.5",
+    "i18next": "^26.0.6",
+    "kysely": "^0.28.16",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@types/pg": "^8.20.0",
+    "typescript": "^5.9.3"
   }
 }

@@ -1,0 +1,14 @@
+---
+import HomePage from "../index.astro";
+import { appaloftLocales, type AppaloftLocale } from "../../lib/i18n";
+
+const requestedLocale = Astro.params.locale as AppaloftLocale | undefined;
+
+if (!requestedLocale || !appaloftLocales.includes(requestedLocale)) {
+  return Astro.redirect("/zh-CN/");
+}
+
+const locale = requestedLocale;
+---
+
+<HomePage locale={locale} />

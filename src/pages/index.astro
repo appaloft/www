@@ -1,284 +1,362 @@
 ---
 import "../styles/global.css";
+import { isGitHubAuthConfigured } from "../auth";
+import {
+  appaloftLocaleCookieMaxAge,
+  appaloftLocaleCookieName,
+  appaloftLocales,
+  getHomeCopy,
+  localePath,
+  normalizeAppaloftLocale,
+  type AppaloftLocale,
+} from "../lib/i18n";
 
-const features = [
-  {
-    title: "Source becomes a resource profile",
-    body: "Local workspaces, Git repositories, GitHub sources, zip archives, Docker images, Compose bundles, and static outputs normalize into resource-owned source, runtime, network, and health configuration.",
-    icon: "source",
-  },
-  {
-    title: "Deployments stay ids-only",
-    body: "The deployment command accepts project, environment, resource, server, and destination context. Build commands, ports, domains, and TLS intent live with the owner that can verify them.",
-    icon: "ids",
-  },
-  {
-    title: "Environment snapshots are immutable",
-    body: "Configuration precedence is explicit, secret values are masked, and every deployment can carry the environment state it actually used.",
-    icon: "snapshot",
-  },
-  {
-    title: "Docker and OCI are the v1 substrate",
-    body: "Runtime planning produces or resolves container artifacts for apps, static sites, images, and Compose workloads while keeping future runtime targets behind the same boundary.",
-    icon: "container",
-  },
-  {
-    title: "Access and TLS are resource-scoped",
-    body: "Generated access, proxy route status, custom domains, certificate requests, runtime logs, health, and diagnostics belong to resource and routing read models, not hidden UI state.",
-    icon: "route",
-  },
-  {
-    title: "The web console is a client",
-    body: "CLI, HTTP, oRPC, and future MCP tools dispatch the same command and query contracts. The static console consumes contracts; it does not invent business rules.",
-    icon: "contracts",
-  },
-];
+type Props = {
+  locale?: string;
+};
 
-const loop = [
-  ["detect", "Inspect source evidence, resource profile, target capability, and workload shape before making runtime choices."],
-  ["plan", "Resolve build, package, access, proxy, and execution intent into a provider-neutral runtime plan."],
-  ["execute", "Apply the plan through the selected runtime target backend, starting with single-server Docker and Compose."],
-  ["verify", "Observe deployment progress, generated access, resource health, logs, proxy state, and diagnostics."],
-  ["rollback", "Keep rollback intent in the release orchestration model so failure paths stay explicit instead of improvised."],
-];
+const localeCookieDomain = (
+  process.env.APPALOFT_LOCALE_COOKIE_DOMAIN ??
+  process.env.PUBLIC_APPALOFT_LOCALE_COOKIE_DOMAIN ??
+  ""
+).trim();
+const locale = normalizeAppaloftLocale(Astro.props.locale ?? Astro.cookies.get(appaloftLocaleCookieName)?.value);
+const copy = getHomeCopy(locale);
+const githubHref = "https://github.com/appaloft/appaloft";
+const docsHref = "https://github.com/appaloft/appaloft/tree/main/docs";
+const releasesHref = "https://github.com/appaloft/appaloft/releases";
+const configuredConsoleHref = ((import.meta.env.PUBLIC_APPALOFT_CONSOLE_URL as string | undefined) ?? "").trim();
+const consoleHref = configuredConsoleHref
+  ? configuredConsoleHref.replace(/\/+$/, "") || "/"
+  : "/deploy";
+const initialIdentity = Astro.locals.user?.name || Astro.locals.user?.email || null;
+const initialAuthStatus = initialIdentity ? `${copy.auth.signedIn}: ${initialIdentity}` : copy.auth.signedOut;
+const installCommandParts = copy.hero.installCommand.split(" ");
+const installCommandStart = installCommandParts.slice(0, 2).join(" ");
+const installCommandUrl = installCommandParts[2] ?? "";
+const installCommandEnd = installCommandParts.slice(3).join(" ");
 
-const interfaces = [
-  ["CLI", "Interactive deploys, headless SSH/server state flows, doctor checks, environment commands, runtime logs, and operator terminals."],
-  ["HTTP + oRPC", "Typed business transport for API routes, OpenAPI REST routes, frontend clients, and future automation contracts."],
-  ["Static console", "A browser client for projects, resources, deployments, domains, logs, health, and diagnostics over the shared backend contracts."],
-];
+Astro.cookies.set(appaloftLocaleCookieName, locale, {
+  httpOnly: false,
+  maxAge: appaloftLocaleCookieMaxAge,
+  path: "/",
+  sameSite: "lax",
+  secure: Astro.url.protocol === "https:",
+  ...(localeCookieDomain ? { domain: localeCookieDomain } : {}),
+});
 
-function icon(name: string) {
-  const paths: Record<string, string> = {
-    source: '<path d="M5 8.5h14M5 15.5h8M8 4h8l4 4v12H4V4h4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
-    ids: '<path d="M5 7h14M5 12h14M5 17h9M15 17l2 2 3-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
-    snapshot: '<path d="M7 4h10l3 3v13H4V4h3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 13h8M8 17h5M16 4v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
-    container: '<path d="M4 8l8-4 8 4-8 4-8-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 8v8l8 4 8-4V8M12 12v8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
-    route: '<path d="M6 6h4v4H6V6ZM14 14h4v4h-4v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8h3a3 3 0 0 1 3 3v3M8 10v1a5 5 0 0 0 5 5h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
-    contracts: '<path d="M5 5h14v14H5V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 13h5M16 13l2 2-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
-  };
+function localeLabel(nextLocale: AppaloftLocale) {
+  return nextLocale === "zh-CN" ? copy.language.simplifiedChinese : copy.language.english;
+}
 
-  return paths[name] ?? paths.source;
+type CodeToken = {
+  text: string;
+  className: string;
+};
+
+function highlightCliLine(line: string) {
+  return line.split(/(\s+)/).map((text, index) => {
+    if (/^\s+$/.test(text)) {
+      return { text, className: "token-space" };
+    }
+
+    if (index === 0) {
+      return { text, className: "token-command" };
+    }
+
+    if (text.startsWith("-")) {
+      return { text, className: "token-flag" };
+    }
+
+    if (text === "|") {
+      return { text, className: "token-operator" };
+    }
+
+    if (/^(https?:\/\/|[\w.-]+@|\d+\.\d+\.\d+\.\d+)/.test(text)) {
+      return { text, className: "token-url" };
+    }
+
+    return { text, className: "token-plain" };
+  });
+}
+
+function highlightWorkflowLine(line: string): CodeToken[] {
+  const match = line.match(/^(\s*)(-\s*)?([^:#]+)(:\s*)(.*)$/);
+
+  if (!match) {
+    return [{ text: line, className: "token-plain" }];
+  }
+
+  const [, indent, dash = "", key, colon, value] = match;
+  return [
+    { text: indent, className: "token-space" },
+    { text: dash, className: "token-operator" },
+    { text: key, className: "token-key" },
+    { text: colon, className: "token-punctuation" },
+    { text: value, className: value.includes("${{") ? "token-secret" : "token-value" },
+  ];
+}
+
+function highlightScenarioLine(line: string, badge: string) {
+  return badge === "workflow" ? highlightWorkflowLine(line) : highlightCliLine(line);
 }
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale} data-locale={locale} data-locale-cookie-domain={localeCookieDomain || undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Appaloft is an AI-native local-to-cloud deployment platform for developers deploying local workspaces, repositories, archives, images, and Compose bundles onto their own servers." />
-    <meta name="theme-color" content="#080B0A" />
+    <meta name="description" content={copy.meta.description} />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>Appaloft - deployment control for your own servers</title>
+    {appaloftLocales.map((nextLocale) => (
+      <link rel="alternate" hreflang={nextLocale} href={localePath(nextLocale)} />
+    ))}
+    <title>{copy.meta.title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{copy.skipLink}</a>
     <div class="site-shell">
       <header class="hero">
-        <img class="hero-background" src="/images/appaloft-hero-control-plane.jpg" alt="" aria-hidden="true" />
-        <nav class="nav" aria-label="Main navigation">
-          <a class="brand" href="/" aria-label="Appaloft home">
+        <img class="hero-background" src="/images/appaloft-hero-cloud.jpg" alt="" aria-hidden="true" />
+        <nav class="nav" aria-label={copy.nav.label}>
+          <a class="brand" href={localePath(locale)} aria-label={copy.nav.home}>
             <span class="brand-mark" aria-hidden="true">A</span>
             <span>Appaloft</span>
           </a>
           <div class="nav-links">
-            <a href="#platform">Platform</a>
-            <a href="#loop">Loop</a>
-            <a href="#model">Model</a>
-            <a href="#interfaces">Interfaces</a>
+            <a href="#entries">{copy.nav.platform}</a>
+            <a href="#examples">{copy.nav.loop}</a>
           </div>
-          <a class="nav-cta" href="https://github.com/appaloft/appaloft">GitHub</a>
+          <div
+            class="nav-actions"
+            data-auth-widget
+            data-auth-locale={locale}
+            data-auth-github-configured={isGitHubAuthConfigured ? "true" : "false"}
+            data-auth-connect-github={copy.auth.connectGithub}
+            data-auth-connecting={copy.auth.connecting}
+            data-auth-connected={copy.auth.connected}
+            data-auth-signed-in={copy.auth.signedIn}
+            data-auth-signed-out={copy.auth.signedOut}
+            data-auth-unavailable={copy.auth.unavailable}
+          >
+            <div class="locale-switcher" aria-label={copy.language.label}>
+              {appaloftLocales.map((nextLocale) => (
+                <a
+                  class={nextLocale === locale ? "locale-link is-active" : "locale-link"}
+                  href={localePath(nextLocale)}
+                  data-locale-link={nextLocale}
+                  aria-current={nextLocale === locale ? "page" : undefined}
+                >
+                  {localeLabel(nextLocale)}
+                </a>
+              ))}
+            </div>
+            <span class="auth-status" data-auth-status hidden={!isGitHubAuthConfigured && !initialIdentity}>
+              {initialAuthStatus}
+            </span>
+            <button class="nav-cta auth-connect" type="button" data-auth-connect hidden={!isGitHubAuthConfigured}>
+              {copy.auth.connectGithub}
+            </button>
+            <a class="nav-cta" href={consoleHref}>{copy.nav.console}</a>
+          </div>
         </nav>
+
         <div class="hero-inner">
-          <p class="eyebrow">AI-native deployment control plane</p>
-          <h1>Deploy local work to your own servers with a real control loop.</h1>
-          <p class="hero-lede">
-            Appaloft turns source, environments, resources, and deployment targets into an explicit
-            detect -> plan -> execute -> verify lifecycle. CLI, HTTP, oRPC, and the static console share
-            the same business contracts.
-          </p>
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="button button-primary" href="https://github.com/appaloft/appaloft">View source</a>
-            <a class="button button-secondary" href="https://github.com/appaloft/appaloft/tree/main/docs">Read docs</a>
+          <div class="hero-copy">
+            <div class="hero-pronunciation" aria-label={copy.hero.pronunciation.label}>
+              <span class="hero-pronunciation-name">{copy.hero.pronunciation.name}</span>
+              <span class="hero-pronunciation-ipa">{copy.hero.pronunciation.ipa}</span>
+              <span class="hero-pronunciation-read">
+                <span>{copy.hero.pronunciation.app}</span>
+                <span>{copy.hero.pronunciation.aloft}</span>
+              </span>
+            </div>
+            <h1>{copy.hero.title}</h1>
+            <div class="domain-demo" aria-label={copy.hero.domainDemo.label} data-domain-demo>
+              <div class="domain-window">
+                <div class="domain-chrome" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="domain-address" aria-hidden="true">
+                  <span class="domain-security">
+                    <span class="domain-lock"></span>
+                  </span>
+                  <span class="domain-url-stack">
+                    <span class="domain-address-state is-local">
+                      <span class="domain-url">{`http://${copy.hero.domainDemo.local}`}</span>
+                    </span>
+                    <span class="domain-address-state is-live">
+                      <span class="domain-url">{`https://${copy.hero.domainDemo.live}`}</span>
+                    </span>
+                  </span>
+                </div>
+                <span class="sr-only">{copy.hero.domainDemo.screenReader}</span>
+                <div class="domain-deploy-command" aria-hidden="true">
+                  <div class="domain-terminal-input">
+                    <span class="domain-command-prompt">$</span>
+                    <span class="domain-command-text">
+                      <strong>{copy.hero.domainDemo.deploy}</strong>
+                    </span>
+                    <span class="domain-command-cursor"></span>
+                  </div>
+                  <div class="domain-terminal-output">
+                    {copy.hero.domainDemo.terminalLines.map((line, index) => (
+                      <span class={index === 3 ? "domain-terminal-line line-4 is-typed" : `domain-terminal-line line-${index + 1}`}>
+                        <span class="domain-terminal-status" aria-hidden="true">
+                          <span class="status-loading"></span>
+                          <span class="status-done">[ok]</span>
+                        </span>
+                        <span class="domain-terminal-text">{line}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hero-actions" aria-label={copy.hero.actionsLabel}>
+              <a class="button button-primary" href="#examples">{copy.hero.primaryAction}</a>
+              <a class="button button-secondary" href={releasesHref}>{copy.hero.secondaryAction}</a>
+            </div>
           </div>
-          <div class="hero-proof" aria-label="Platform highlights">
-            <span class="proof-pill">CLI-first</span>
-            <span class="proof-pill">Static console</span>
-            <span class="proof-pill">PostgreSQL + PGlite</span>
-            <span class="proof-pill">Docker/OCI runtime</span>
+
+          <div
+            class="hero-command"
+            aria-label={copy.hero.installLabel}
+            data-command-shell
+            data-copy-ready={copy.hero.copyCommand}
+            data-copy-done={copy.hero.copiedCommand}
+          >
+            <div class="command-head">
+              <span>{copy.hero.installLabel}</span>
+              <button class="command-copy" type="button" data-copy-command>{copy.hero.copyCommand}</button>
+            </div>
+            <div class="command-row">
+              <code data-command-value data-copy-value={copy.hero.installCommand}>
+                <span>{installCommandStart}</span>
+                <span class="command-url">{installCommandUrl}</span>
+                <span>{installCommandEnd}</span>
+              </code>
+            </div>
+            <p>{copy.hero.installNote}</p>
           </div>
         </div>
       </header>
 
       <main id="main">
-        <section class="signal-strip" aria-label="Core platform signals">
-          <div class="signal-grid">
-            <div class="signal">
-              <strong>Backend first</strong>
-              <span>The web UI is a client, not the place where deployment rules live.</span>
-            </div>
-            <div class="signal">
-              <strong>Owner scoped</strong>
-              <span>Projects collect resources; resources own deploy actions, history, access, logs, and health.</span>
-            </div>
-            <div class="signal">
-              <strong>Self-host ready</strong>
-              <span>Run with PostgreSQL for hosted installs or embedded PGlite for local-first single instances.</span>
-            </div>
-            <div class="signal">
-              <strong>Tool ready</strong>
-              <span>Business operations are modeled for CLI, HTTP, web, automation, and future MCP tools.</span>
-            </div>
-          </div>
-        </section>
-
-        <section id="platform" class="section">
+        <section id="examples" class="section scenario-section">
           <div class="wrap">
-            <div class="section-heading">
-              <div>
-                <p class="kicker">Platform</p>
-                <h2>Deployment primitives that do not change shape between UI, API, and automation.</h2>
+            <div class="compact-heading">
+              <p class="kicker">{copy.scenarios.kicker}</p>
+              <h2>{copy.scenarios.title}</h2>
+              <p>{copy.scenarios.body}</p>
+            </div>
+
+            <div class="scenario-carousel" aria-label={copy.scenarios.label} data-scenario-carousel>
+              <div class="scenario-tabs" role="tablist">
+                {copy.scenarios.items.map((scenario, index) => (
+                  <button
+                    class={index === 0 ? "scenario-tab is-active" : "scenario-tab"}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === 0 ? "true" : "false"}
+                    data-scenario-tab={String(index)}
+                  >
+                    <span>{scenario.label}</span>
+                    <span class="scenario-progress" aria-hidden="true"></span>
+                  </button>
+                ))}
               </div>
-              <p>
-                Appaloft keeps source selection, resource profiles, environment snapshots, runtime targets,
-                routing, TLS, logs, and health in explicit bounded contexts.
-              </p>
-            </div>
 
-            <div class="feature-grid">
-              {features.map((feature) => (
-                <article class="feature-card">
-                  <span class="icon-box" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" set:html={icon(feature.icon)}></svg>
-                  </span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+              <div class="scenario-stage">
+                {copy.scenarios.items.map((scenario, index) => (
+                  <article
+                    class={index === 0 ? "scenario-panel is-active" : "scenario-panel"}
+                    data-scenario-panel={String(index)}
+                    aria-hidden={index === 0 ? "false" : "true"}
+                  >
+                    <div class="scenario-copy">
+                      <span class="scenario-badge">{scenario.badge}</span>
+                      <h3>{scenario.title}</h3>
+                      <p>{scenario.body}</p>
+                    </div>
 
-        <section id="loop" class="section section-dark">
-          <div class="wrap loop-layout">
-            <div>
-              <p class="kicker">Deployment loop</p>
-              <h2>Detect, plan, execute, verify, and keep the failure path explicit.</h2>
-              <p class="section-lede">
-                The runtime pipeline is not a black box behind a deploy button. A deployment is an accepted
-                attempt with context references, plan snapshots, progress, runtime observation, and support-ready diagnostics.
-              </p>
-              <div class="loop-list" aria-label="Deployment lifecycle">
-                {loop.map(([name, body], index) => (
-                  <article class="loop-step">
-                    <code>{String(index + 1).padStart(2, "0")}</code>
-                    <div>
-                      <h3>{name}</h3>
-                      <p>{body}</p>
+                    <div class="scenario-visual">
+                      {scenario.kind === "code" && (
+                        <div class={`terminal terminal-${scenario.badge}`}>
+                          <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                          <pre><code>{scenario.lines.map((line) => (
+                            <span class="terminal-line">{highlightScenarioLine(line, scenario.badge).map((token) => (
+                              <span class={`code-token ${token.className}`}>{token.text}</span>
+                            ))}</span>
+                          ))}</code></pre>
+                        </div>
+                      )}
+
+                      {scenario.kind === "desktop" && (
+                        <div class="desktop-mock">
+                          <div class="mock-sidebar">
+                            <span>Appaloft</span>
+                            <small>Servers</small>
+                            <small>Apps</small>
+                            <small>Deploys</small>
+                          </div>
+                          <div class="mock-main">
+                            {scenario.cards.map(([name, status, meta]) => (
+                              <div class="mock-row">
+                                <strong>{name}</strong>
+                                <span>{status}</span>
+                                <small>{meta}</small>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {scenario.kind === "chat" && (
+                        <div class="chat-mock">
+                          {scenario.messages.map(([speaker, message]) => (
+                            <div class={speaker === "you" ? "chat-line is-user" : "chat-line"}>
+                              <small>{speaker}</small>
+                              <span>{message}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {scenario.kind === "cloud" && (
+                        <div class="cloud-mock">
+                          {scenario.metrics.map(([name, value]) => (
+                            <div class="cloud-tile">
+                              <span>{name}</span>
+                              <strong>{value}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </article>
                 ))}
               </div>
             </div>
-            <figure class="loop-image">
-              <img src="/images/appaloft-deployment-loop.jpg" alt="Generated technical diagram of a deployment loop around self-hosted servers" loading="lazy" />
-            </figure>
           </div>
         </section>
 
-        <section id="model" class="section section-soft">
-          <div class="wrap">
-            <div class="section-heading">
-              <div>
-                <p class="kicker">Domain model</p>
-                <h2>The project-facing path is simple because ownership is precise.</h2>
-              </div>
-              <p>
-                The core flow is Project -> Environment -> Resource -> Deployment. The resource is the deployable unit;
-                the deployment is the attempt record.
-              </p>
-            </div>
-            <div class="map" aria-label="Project to deployment model">
-              <article class="map-cell">
-                <small>01</small>
-                <h3>Project</h3>
-                <p>Top-level workspace and resource collection boundary for teams, resources, and rollup views.</p>
-              </article>
-              <article class="map-cell">
-                <small>02</small>
-                <h3>Environment</h3>
-                <p>Configuration scope with precedence, masked secrets, promotion, diffing, and deployment snapshots.</p>
-              </article>
-              <article class="map-cell">
-                <small>03</small>
-                <h3>Resource</h3>
-                <p>Deployable unit that owns source, runtime, network, health, access, logs, diagnostics, and domains.</p>
-              </article>
-              <article class="map-cell">
-                <small>04</small>
-                <h3>Deployment</h3>
-                <p>Execution attempt that resolves the resource profile against a selected destination and target backend.</p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section class="section section-dark">
-          <div class="wrap contrast-layout">
+        <section id="entries" class="section section-soft">
+          <div class="wrap feature-slab">
             <div>
-              <p class="kicker">Positioning</p>
-              <h2>Familiar PaaS ergonomics, with deployment state close to the servers you operate.</h2>
-              <p class="section-lede">
-                Appaloft borrows the useful parts of modern PaaS workflows: repository-driven deploys,
-                generated access, environment configuration, logs, health, and API automation. The difference is
-                that the contracts are explicit and the self-hosted path is not a second-class mode.
-              </p>
+              <p class="kicker">{copy.features.kicker}</p>
+              <h2>{copy.features.title}</h2>
+              <p>{copy.features.body}</p>
             </div>
-            <div class="contrast-list">
-              <article class="contrast-item">
-                <h3>For local and headless deploys</h3>
-                <p>CLI and GitHub Actions flows can deploy to SSH targets with Appaloft state on the server instead of assuming a hosted control plane is always present.</p>
-              </article>
-              <article class="contrast-item">
-                <h3>For operators</h3>
-                <p>Proxy configuration previews, resource health, runtime logs, terminal sessions, and diagnostic summaries are resource-owned observation surfaces.</p>
-              </article>
-              <article class="contrast-item">
-                <h3>For future tools</h3>
-                <p>Commands and queries are cataloged operations, so AI agents and MCP tools can reuse the same boundaries as the CLI and API.</p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="interfaces" class="section">
-          <div class="wrap">
-            <div class="section-heading">
-              <div>
-                <p class="kicker">Interfaces</p>
-                <h2>One operation catalog, multiple first-class entry points.</h2>
-              </div>
-              <p>
-                CLI, API, and Web do not compete for ownership. Each interface dispatches command and query messages
-                through the same application surface.
-              </p>
-            </div>
-            <div class="interface-grid">
-              {interfaces.map(([name, body]) => (
-                <article class="interface">
-                  <h3>{name}</h3>
+            <div class="feature-list">
+              {copy.features.items.map(([title, body]) => (
+                <article>
+                  <h3>{title}</h3>
                   <p>{body}</p>
                 </article>
               ))}
-            </div>
-            <div class="terminal" aria-label="Example deployment flow">
-              <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-              <pre><code><span class="muted">$</span> appaloft deploy ./service
-<span class="accent">detect</span>   source profile, framework evidence, target capability
-<span class="accent">plan</span>     Docker/OCI artifact, network profile, access route
-<span class="accent">execute</span>  selected runtime target backend
-<span class="accent">verify</span>   resource health, logs, generated access, diagnostics</code></pre>
             </div>
           </div>
         </section>
@@ -286,16 +364,13 @@ function icon(name: string) {
         <section class="section cta">
           <div class="wrap cta-inner">
             <div>
-              <p class="kicker">Build from the contracts</p>
-              <h2>Start with the operation map, then ship through Astro, CLI, API, or future tools.</h2>
-              <p>
-                The current source of truth lives in the Appaloft docs: core operations, domain model,
-                decision records, workflows, errors, and test matrices.
-              </p>
+              <p class="kicker">{copy.cta.kicker}</p>
+              <h2>{copy.cta.title}</h2>
+              <p>{copy.cta.body}</p>
             </div>
             <div class="hero-actions">
-              <a class="button button-primary" href="https://github.com/appaloft/appaloft/tree/main/docs">Open docs</a>
-              <a class="button button-secondary" href="https://github.com/appaloft/appaloft">GitHub repo</a>
+              <a class="button button-primary" href={docsHref}>{copy.cta.docs}</a>
+              <a class="button button-secondary" href={githubHref}>{copy.cta.github}</a>
             </div>
           </div>
         </section>
@@ -303,13 +378,18 @@ function icon(name: string) {
 
       <footer class="footer">
         <div class="wrap footer-inner">
-          <span>Appaloft. Deployment control for your own servers.</span>
+          <span>{copy.footer.text}</span>
           <div class="footer-links">
-            <a href="https://github.com/appaloft/appaloft">GitHub</a>
-            <a href="https://github.com/appaloft/appaloft/tree/main/docs">Docs</a>
+            <a href={githubHref}>{copy.nav.github}</a>
+            <a href={docsHref}>{copy.footer.docs}</a>
           </div>
         </div>
       </footer>
     </div>
+
+    <script>
+      import "../scripts/auth-widget";
+      import "../scripts/home-actions";
+    </script>
   </body>
 </html>
