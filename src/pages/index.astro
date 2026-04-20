@@ -51,7 +51,7 @@ Astro.cookies.set(appaloftLocaleCookieName, locale, {
 });
 
 function localeLabel(nextLocale: AppaloftLocale) {
-  return nextLocale === "zh-CN" ? copy.language.simplifiedChinese : copy.language.english;
+  return nextLocale === "zh-CN" ? "中文" : "EN";
 }
 
 type CodeToken = {
@@ -136,9 +136,23 @@ function highlightScenarioLine(line: string, badge: string) {
             <a href="#entries">{copy.nav.platform}</a>
             <a href="#examples">{copy.nav.loop}</a>
           </div>
+          <button
+            class="nav-menu-toggle"
+            type="button"
+            aria-label={copy.nav.menu}
+            aria-controls="nav-menu"
+            aria-expanded="false"
+            data-nav-menu-toggle
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
           <div
+            id="nav-menu"
             class="nav-actions"
             data-auth-widget
+            data-nav-menu
             data-auth-locale={locale}
             data-auth-github-configured={isGitHubAuthConfigured ? "true" : "false"}
             data-auth-connect-github={copy.auth.connectGithub}
@@ -246,7 +260,6 @@ function highlightScenarioLine(line: string, badge: string) {
                 <span>{installCommandEnd}</span>
               </code>
             </div>
-            <p>{copy.hero.installNote}</p>
           </div>
         </div>
       </header>

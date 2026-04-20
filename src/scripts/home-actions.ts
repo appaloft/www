@@ -1,5 +1,44 @@
 const carouselIntervalMs = 5200;
 
+function initNavMenu(button: HTMLButtonElement) {
+  const menu = document.querySelector<HTMLElement>("[data-nav-menu]");
+
+  if (!menu) {
+    return;
+  }
+
+  function setOpen(isOpen: boolean) {
+    button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    menu.classList.toggle("is-open", isOpen);
+  }
+
+  button.addEventListener("click", () => {
+    setOpen(button.getAttribute("aria-expanded") !== "true");
+  });
+
+  menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      setOpen(false);
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Node) || button.contains(target) || menu.contains(target)) {
+      return;
+    }
+
+    setOpen(false);
+  });
+}
+
 function initDomainDemo(demo: HTMLElement) {
   let hasStarted = false;
   let isIntersecting = false;
@@ -120,6 +159,8 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach((but
     copyCommand(button);
   });
 });
+
+document.querySelectorAll<HTMLButtonElement>("[data-nav-menu-toggle]").forEach(initNavMenu);
 
 document.querySelectorAll<HTMLElement>("[data-domain-demo]").forEach(initDomainDemo);
 
