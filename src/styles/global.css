@@ -1009,17 +1009,11 @@ h2 {
   padding: 64px 0;
 }
 
-.section-soft {
-  background: var(--muted);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
 .compact-heading {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.62fr);
-  gap: 42px;
-  align-items: end;
+  max-width: 780px;
+  gap: 12px;
+  align-items: start;
   margin-bottom: 28px;
 }
 
@@ -1040,9 +1034,7 @@ h2 {
   line-height: 1.12;
 }
 
-.compact-heading p,
-.feature-slab > div > p,
-.cta p {
+.compact-heading p {
   margin: 0;
   color: var(--muted-foreground);
   font-size: 1.04rem;
@@ -1397,82 +1389,6 @@ h2 {
   font-size: 1.2rem;
 }
 
-.feature-slab {
-  display: grid;
-  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
-  gap: 46px;
-  align-items: start;
-}
-
-.feature-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.feature-list article {
-  min-height: 190px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  padding: 22px;
-}
-
-.feature-list h3 {
-  margin: 0 0 12px;
-  color: var(--foreground);
-  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 1.08rem;
-}
-
-.feature-list p {
-  margin: 0;
-  color: var(--muted-foreground);
-  line-height: 1.64;
-}
-
-.cta {
-  position: relative;
-  overflow: hidden;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--muted);
-  color: var(--foreground);
-}
-
-.cta::before {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background:
-    repeating-linear-gradient(135deg, rgba(24, 24, 27, 0.045) 0 1px, transparent 1px 18px),
-    linear-gradient(135deg, rgba(37, 99, 235, 0.08), transparent 42%, rgba(24, 24, 27, 0.03)),
-    var(--muted);
-}
-
-.cta-inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 34px;
-  align-items: center;
-}
-
-.cta h2 {
-  max-width: 700px;
-}
-
-.cta p {
-  max-width: 680px;
-  margin-top: 16px;
-  color: var(--muted-foreground);
-}
-
-.cta .kicker {
-  color: var(--muted-foreground);
-}
-
 .footer {
   border-top: 1px solid var(--border);
   padding: 30px 0;
@@ -1529,9 +1445,7 @@ button:focus-visible {
 
   .hero-inner,
   .compact-heading,
-  .scenario-panel,
-  .feature-slab,
-  .cta-inner {
+  .scenario-panel {
     grid-template-columns: 1fr;
   }
 
@@ -1543,9 +1457,6 @@ button:focus-visible {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .feature-list {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
