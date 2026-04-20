@@ -133,8 +133,7 @@ function highlightScenarioLine(line: string, badge: string) {
             <span>Appaloft</span>
           </a>
           <div class="nav-links">
-            <a href="#entries">{copy.nav.platform}</a>
-            <a href="#examples">{copy.nav.loop}</a>
+            <a href="#examples">{copy.nav.platform}</a>
           </div>
           <button
             class="nav-menu-toggle"
@@ -363,37 +362,6 @@ function highlightScenarioLine(line: string, badge: string) {
           </div>
         </section>
 
-        <section id="entries" class="section section-soft">
-          <div class="wrap feature-slab">
-            <div>
-              <p class="kicker">{copy.features.kicker}</p>
-              <h2>{copy.features.title}</h2>
-              <p>{copy.features.body}</p>
-            </div>
-            <div class="feature-list">
-              {copy.features.items.map(([title, body]) => (
-                <article>
-                  <h3>{title}</h3>
-                  <p>{body}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section class="section cta">
-          <div class="wrap cta-inner">
-            <div>
-              <p class="kicker">{copy.cta.kicker}</p>
-              <h2>{copy.cta.title}</h2>
-              <p>{copy.cta.body}</p>
-            </div>
-            <div class="hero-actions">
-              <a class="button button-primary" href={docsHref}>{copy.cta.docs}</a>
-              <a class="button button-secondary" href={githubHref}>{copy.cta.github}</a>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer class="footer">
