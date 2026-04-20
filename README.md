@@ -16,7 +16,7 @@ Generated image assets live in `public/images/`.
 ## Production deployment
 
 Production deploys are handled by `.github/workflows/deploy.yml` with `appaloft/deploy-action@v1`
-and Appaloft CLI `v0.2.1`.
+and Appaloft CLI `v0.2.2`.
 
 Required GitHub repository variables:
 
@@ -29,6 +29,41 @@ Required GitHub repository secrets:
 - `APPALOFT_BETTER_AUTH_SECRET`: Better Auth runtime secret
 
 `appaloft.yml` deploys the Astro standalone server to `www.appaloft.com` and `appaloft.com`.
+
+## Pull request previews
+
+Pull request previews are handled by `.github/workflows/preview.yml` with `appaloft/setup-appaloft@v1`
+and Appaloft CLI `v0.2.2`.
+
+The workflow runs on `pull_request` `opened`, `reopened`, and `synchronize` events after the workflow
+exists on the default branch. It skips fork pull requests so repository secrets are not exposed to
+untrusted code.
+
+Preview deploys use `appaloft.preview.yml`, not the production `appaloft.yml`. The preview config
+keeps runtime and network settings aligned with production, but leaves production domains and
+production auth origins out. The workflow supplies trusted PR context to the CLI:
+
+```text
+--preview pull-request
+--preview-id pr-<pull-request-number>
+--preview-domain-template <pull-request-number>.preview.appaloft.com
+```
+
+Preview URLs use this shape:
+
+```text
+https://<pull-request-number>.preview.appaloft.com
+```
+
+Custom preview DNS must point to the Appaloft target server before a preview host can resolve:
+
+```text
+*.preview.appaloft.com -> 107.173.15.220
+```
+
+This is an Action-owned preview path. Product-level preview environments should later move policy,
+comments/checks, cleanup, quotas, and scoped preview secrets into Appaloft itself, likely through a
+GitHub App plus Appaloft control-plane or agent workflow.
 
 ## i18n and auth
 
