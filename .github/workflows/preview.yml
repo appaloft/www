@@ -19,9 +19,9 @@ jobs:
       contents: read
     environment:
       name: preview-pr-${{ github.event.pull_request.number }}
-      url: https://${{ github.event.pull_request.number }}.preview.appaloft.com
+      url: http://${{ github.event.pull_request.number }}.preview.appaloft.com
     env:
-      APPALOFT_CLI_VERSION: v0.2.2
+      APPALOFT_CLI_VERSION: v0.2.3
       PREVIEW_HOST: ${{ github.event.pull_request.number }}.preview.appaloft.com
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
     steps:
@@ -34,22 +34,6 @@ jobs:
         uses: appaloft/setup-appaloft@v1
         with:
           version: ${{ env.APPALOFT_CLI_VERSION }}
-
-      - name: Prepare preview config
-        shell: bash
-        run: |
-          mkdir -p .appaloft
-          preview_config=".appaloft/preview.generated.yml"
-          cp appaloft.preview.yml "$preview_config"
-          cat >>"$preview_config" <<YAML
-
-          access:
-            domains:
-              - host: ${PREVIEW_HOST}
-                pathPrefix: /
-                tlsMode: auto
-          YAML
-          echo "APPALOFT_PREVIEW_CONFIG=$preview_config" >>"$GITHUB_ENV"
 
       - name: Prepare SSH key
         shell: bash
@@ -67,11 +51,29 @@ jobs:
           APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
         run: |
           appaloft deploy . \
-            --config "$APPALOFT_PREVIEW_CONFIG" \
             --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
             --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
             --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
             --server-proxy-kind traefik \
             --state-backend ssh-pglite \
+            --method workspace-commands \
+            --install "bun install --frozen-lockfile" \
+            --build "bun run build" \
+            --start "bun ./dist/server/entry.mjs" \
+            --port 4321 \
+            --health-path / \
+            --upstream-protocol http \
+            --exposure-mode reverse-proxy \
+            --env "HOST=0.0.0.0" \
+            --env "PORT=4321" \
+            --env "APPALOFT_BETTER_AUTH_URL=http://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_COOKIE_DOMAIN=.preview.appaloft.com" \
+            --env "APPALOFT_BETTER_AUTH_TRUSTED_ORIGINS=http://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_TRUSTED_PROXY_HEADERS=true" \
+            --env "APPALOFT_LOCALE_COOKIE_DOMAIN=.preview.appaloft.com" \
+            --secret "APPALOFT_BETTER_AUTH_SECRET=ci-env:APPALOFT_BETTER_AUTH_SECRET" \
             --preview pull-request \
-            --preview-id "$PREVIEW_ID"
+            --preview-id "$PREVIEW_ID" \
+            --preview-domain-template "$PREVIEW_HOST" \
+            --preview-tls-mode disabled \
+            --require-preview-url
