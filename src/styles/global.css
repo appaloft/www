@@ -537,7 +537,7 @@ h2 {
 
 .domain-terminal-input {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   color: #fafafa;
 }
@@ -547,15 +547,15 @@ h2 {
 }
 
 .domain-command-text {
-  display: inline-block;
-  width: 15ch;
-  overflow: hidden;
-  clip-path: inset(0 100% 0 0);
-  white-space: nowrap;
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .domain-demo.is-running .domain-command-text {
-  animation: domain-command-type 10s steps(15, end) forwards;
+  animation: none;
 }
 
 .domain-command-text strong {
@@ -563,16 +563,11 @@ h2 {
 }
 
 .domain-command-cursor {
-  width: 8px;
-  height: 1.15em;
-  background: #f4f4f5;
-  opacity: 1;
-  transform: translateX(-15ch);
-  animation: domain-cursor-idle 900ms steps(1, end) infinite;
+  display: none;
 }
 
 .domain-demo.is-running .domain-command-cursor {
-  animation: domain-command-cursor 10s forwards;
+  animation: none;
 }
 
 .domain-terminal-output {
@@ -652,9 +647,9 @@ h2 {
 }
 
 .domain-terminal-line.is-typed .domain-terminal-text {
-  display: inline-block;
-  clip-path: inset(0 100% 0 0);
-  white-space: nowrap;
+  display: inline;
+  clip-path: none;
+  white-space: normal;
 }
 
 .domain-demo.is-running .domain-terminal-line.line-1 {
@@ -714,7 +709,7 @@ h2 {
 }
 
 .domain-demo.is-running .domain-terminal-line.is-typed .domain-terminal-text {
-  animation: domain-terminal-success-type 680ms steps(26, end) 6.78s forwards;
+  animation: none;
 }
 
 @keyframes domain-local-url {
@@ -1118,6 +1113,7 @@ h2 {
 
 .scenario-stage {
   position: relative;
+  overflow: hidden;
   min-height: 430px;
 }
 
