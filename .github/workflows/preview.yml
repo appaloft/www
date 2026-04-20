@@ -35,6 +35,22 @@ jobs:
         with:
           version: ${{ env.APPALOFT_CLI_VERSION }}
 
+      - name: Prepare preview config
+        shell: bash
+        run: |
+          mkdir -p .appaloft
+          preview_config=".appaloft/preview.generated.yml"
+          cp appaloft.preview.yml "$preview_config"
+          cat >>"$preview_config" <<YAML
+
+          access:
+            domains:
+              - host: ${PREVIEW_HOST}
+                pathPrefix: /
+                tlsMode: auto
+          YAML
+          echo "APPALOFT_PREVIEW_CONFIG=$preview_config" >>"$GITHUB_ENV"
+
       - name: Prepare SSH key
         shell: bash
         run: |
@@ -51,12 +67,11 @@ jobs:
           APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
         run: |
           appaloft deploy . \
-            --config appaloft.preview.yml \
+            --config "$APPALOFT_PREVIEW_CONFIG" \
             --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
             --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
             --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
             --server-proxy-kind traefik \
             --state-backend ssh-pglite \
             --preview pull-request \
-            --preview-id "$PREVIEW_ID" \
-            --preview-domain-template "$PREVIEW_HOST"
+            --preview-id "$PREVIEW_ID"

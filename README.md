@@ -39,14 +39,15 @@ The workflow runs on `pull_request` `opened`, `reopened`, and `synchronize` even
 exists on the default branch. It skips fork pull requests so repository secrets are not exposed to
 untrusted code.
 
-Preview deploys use `appaloft.preview.yml`, not the production `appaloft.yml`. The preview config
-keeps runtime and network settings aligned with production, but leaves production domains and
-production auth origins out. The workflow supplies trusted PR context to the CLI:
+Preview deploys start from `appaloft.preview.yml`, not the production `appaloft.yml`. The committed
+preview config keeps runtime and network settings aligned with production, but leaves production
+domains and production auth origins out. During the workflow, GitHub writes the PR host into a
+temporary generated config under `.appaloft/preview.generated.yml`, then supplies trusted PR context
+to the CLI:
 
 ```text
 --preview pull-request
 --preview-id pr-<pull-request-number>
---preview-domain-template <pull-request-number>.preview.appaloft.com
 ```
 
 Preview URLs use this shape:
