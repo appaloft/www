@@ -63,6 +63,14 @@ jobs:
 
           while IFS= read -r deployment_id; do
             [[ -n "$deployment_id" ]] || continue
+            gh api "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -f state=inactive >/dev/null
+          done <<<"$deployment_ids"
+
+          while IFS= read -r deployment_id; do
+            [[ -n "$deployment_id" ]] || continue
             gh api "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}" \
               --method DELETE \
               -H "Accept: application/vnd.github+json"
