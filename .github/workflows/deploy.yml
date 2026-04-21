@@ -14,7 +14,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     concurrency:
-      group: appaloft-www-remote-state
+      group: appaloft-www-production-remote-state
       cancel-in-progress: false
     permissions:
       contents: read

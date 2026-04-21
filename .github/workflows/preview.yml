@@ -17,7 +17,7 @@ jobs:
     if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     concurrency:
-      group: appaloft-www-remote-state
+      group: appaloft-www-preview-remote-state
       cancel-in-progress: false
     permissions:
       contents: read
@@ -86,7 +86,7 @@ jobs:
     if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     concurrency:
-      group: appaloft-www-remote-state
+      group: appaloft-www-preview-remote-state
       cancel-in-progress: false
     permissions:
       contents: read
