@@ -16,6 +16,8 @@ jobs:
   deploy:
     if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    # Preview deploys share the same remote-state root as production and cleanup on the target host.
+    # Serialize all remote-state mutations here until the Appaloft server-side state is split by scope.
     concurrency:
       group: appaloft-www-remote-state
       cancel-in-progress: false
@@ -85,6 +87,7 @@ jobs:
   cleanup:
     if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    # Cleanup mutates the same remote-state root as preview deploys and production deploys.
     concurrency:
       group: appaloft-www-remote-state
       cancel-in-progress: false
