@@ -22,7 +22,7 @@ jobs:
       name: preview-pr-${{ github.event.pull_request.number }}
       url: https://${{ github.event.pull_request.number }}.preview.appaloft.com
     env:
-      APPALOFT_CLI_VERSION: v0.2.4
+      APPALOFT_CLI_VERSION: v0.2.5
       PREVIEW_HOST: ${{ github.event.pull_request.number }}.preview.appaloft.com
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
     steps:
@@ -85,7 +85,7 @@ jobs:
     permissions:
       contents: read
     env:
-      APPALOFT_CLI_VERSION: v0.2.4
+      APPALOFT_CLI_VERSION: v0.2.5
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
