@@ -212,7 +212,7 @@ export const homeCopy = {
       ],
     },
     footer: {
-      text: "From localhost to cloud.",
+      text: "From localhost to your cloud.",
       docs: "文档",
     },
   },
@@ -391,7 +391,7 @@ export const homeCopy = {
       ],
     },
     footer: {
-      text: "From localhost to cloud.",
+      text: "From localhost to your cloud.",
       docs: "Docs",
     },
   },
