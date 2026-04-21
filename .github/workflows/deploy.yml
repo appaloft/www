@@ -13,8 +13,10 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Production and preview still share one Appaloft remote-state root on the target host.
+    # Keep every mutation in the same GitHub Actions concurrency group until the server state is partitioned.
     concurrency:
-      group: appaloft-www-production-remote-state
+      group: appaloft-www-remote-state
       cancel-in-progress: false
     permissions:
       contents: read

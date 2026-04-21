@@ -11,8 +11,9 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    # Manual cleanup also touches the shared remote-state root, so it must join the same queue.
     concurrency:
-      group: appaloft-www-preview-remote-state
+      group: appaloft-www-remote-state
       cancel-in-progress: false
     permissions:
       contents: read
