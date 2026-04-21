@@ -11,6 +11,9 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    concurrency:
+      group: appaloft-www-remote-state
+      cancel-in-progress: false
     permissions:
       contents: read
     env:
