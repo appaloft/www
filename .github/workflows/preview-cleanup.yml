@@ -1,0 +1,47 @@
+name: Preview Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview_id:
+        description: Preview id to clean, for example pr-5
+        required: true
+        type: string
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      APPALOFT_CLI_VERSION: latest
+      PREVIEW_ID: ${{ inputs.preview_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Appaloft
+        uses: appaloft/setup-appaloft@v1
+        with:
+          version: ${{ env.APPALOFT_CLI_VERSION }}
+
+      - name: Prepare SSH key
+        shell: bash
+        run: |
+          key_path="${RUNNER_TEMP}/appaloft-preview-ssh-key"
+          umask 077
+          printf '%s\n' "$APPALOFT_SSH_PRIVATE_KEY" >"$key_path"
+          echo "APPALOFT_SSH_PRIVATE_KEY_FILE=$key_path" >>"$GITHUB_ENV"
+        env:
+          APPALOFT_SSH_PRIVATE_KEY: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+
+      - name: Cleanup preview
+        shell: bash
+        run: |
+          appaloft preview cleanup . \
+            --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
+            --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
+            --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
+            --state-backend ssh-pglite \
+            --preview pull-request \
+            --preview-id "$PREVIEW_ID"
