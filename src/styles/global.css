@@ -1054,6 +1054,23 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.command-row .token-command {
+  color: var(--foreground);
+}
+
+.command-row .token-flag {
+  color: #d97706;
+}
+
+.command-row .token-operator,
+.command-row .token-punctuation {
+  color: var(--foreground-soft);
+}
+
+.command-row .token-url {
+  color: #2563eb;
+}
+
 .section {
   padding: 64px 0;
 }
