@@ -80,7 +80,9 @@ function initDomainDemo(demo: HTMLElement) {
 
 function copyCommand(button: HTMLButtonElement) {
   const shell = button.closest<HTMLElement>("[data-command-shell]");
-  const command = shell?.querySelector<HTMLElement>("[data-command-value]");
+  const command =
+    shell?.querySelector<HTMLElement>("[data-install-panel].is-active [data-command-value]") ??
+    shell?.querySelector<HTMLElement>("[data-command-value]");
   const value = command?.dataset.copyValue ?? command?.textContent?.trim();
 
   if (!shell || !value) {
@@ -106,6 +108,41 @@ function copyCommand(button: HTMLButtonElement) {
     .catch(() => {
       button.textContent = readyLabel;
     });
+}
+
+function initInstallTabs(shell: HTMLElement) {
+  const tabs = Array.from(shell.querySelectorAll<HTMLButtonElement>("[data-install-tab]"));
+  const panels = Array.from(shell.querySelectorAll<HTMLElement>("[data-install-panel]"));
+
+  function setActive(key: string) {
+    tabs.forEach((tab) => {
+      const isActive = tab.dataset.installTab === key;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    panels.forEach((panel) => {
+      const isActive = panel.dataset.installPanel === key;
+      panel.classList.toggle("is-active", isActive);
+      panel.hidden = !isActive;
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.installTab;
+
+      if (key) {
+        setActive(key);
+      }
+    });
+  });
+
+  const activeTab = tabs.find((tab) => tab.classList.contains("is-active")) ?? tabs[0];
+
+  if (activeTab?.dataset.installTab) {
+    setActive(activeTab.dataset.installTab);
+  }
 }
 
 function initScenarioCarousel(carousel: HTMLElement) {
@@ -161,6 +198,8 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach((but
 });
 
 document.querySelectorAll<HTMLButtonElement>("[data-nav-menu-toggle]").forEach(initNavMenu);
+
+document.querySelectorAll<HTMLElement>("[data-command-shell]").forEach(initInstallTabs);
 
 document.querySelectorAll<HTMLElement>("[data-domain-demo]").forEach(initDomainDemo);
 

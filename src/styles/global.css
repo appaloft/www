@@ -291,6 +291,7 @@ img {
 .nav-cta,
 .button,
 .command-copy,
+.command-tab,
 .scenario-tab {
   cursor: pointer;
 }
@@ -927,9 +928,26 @@ h2 {
   width: min(100%, 920px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.96);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
+}
+
+.hero-command-block {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  width: min(100%, 920px);
+}
+
+.hero-command-kicker {
+  margin: 0;
+  color: var(--foreground-soft);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hero-command::before {
@@ -940,30 +958,18 @@ h2 {
   content: "";
 }
 
-.command-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  border-bottom: 1px solid var(--border);
-  padding: 13px 16px 13px 20px;
-  color: var(--muted-foreground);
-  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
 .command-copy {
+  flex: 0 0 auto;
   min-width: 72px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
-  background: var(--muted);
+  background: #ffffff;
   color: var(--foreground);
   padding: 7px 10px;
   font: inherit;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .command-copy:hover {
@@ -972,37 +978,97 @@ h2 {
   color: var(--primary-foreground);
 }
 
+.command-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border-strong);
+  background: #f5f5f5;
+}
+
+.command-tab {
+  min-height: 46px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground-soft);
+  padding: 12px 10px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.command-tab:last-child {
+  border-right: 0;
+}
+
+.command-tab.is-active {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.command-panel {
+  display: none;
+}
+
+.command-panel.is-active {
+  display: block;
+}
+
+.command-panel-copy {
+  padding: 18px 20px 0;
+}
+
+.command-panel-copy strong {
+  color: var(--foreground);
+  font-size: 0.98rem;
+}
+
+.command-panel-copy p {
+  margin: 7px 0 0;
+  color: var(--foreground-soft);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
 .command-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   overflow-x: auto;
   padding: 22px 20px;
 }
 
 .command-row code {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0 0.48ch;
+  display: block;
+  flex: 1 1 auto;
   color: var(--foreground);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.9rem;
   font-weight: 700;
-  white-space: normal;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
-.command-row code span {
-  white-space: nowrap;
+.command-row .token-url {
+  overflow-wrap: anywhere;
 }
 
-.command-row code .command-url {
-  overflow-wrap: normal;
-  white-space: nowrap;
+.command-row .token-command {
+  color: var(--foreground);
 }
 
-.hero-command p {
-  margin: 0;
-  padding: 0 20px 18px;
-  color: var(--muted-foreground);
-  font-size: 0.92rem;
-  line-height: 1.55;
+.command-row .token-flag {
+  color: #d97706;
+}
+
+.command-row .token-operator,
+.command-row .token-punctuation {
+  color: var(--foreground-soft);
+}
+
+.command-row .token-url {
+  color: #2563eb;
 }
 
 .section {
@@ -1043,7 +1109,7 @@ h2 {
 
 .scenario-carousel {
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--card);
   box-shadow: var(--shadow);
@@ -1052,8 +1118,8 @@ h2 {
 .scenario-tabs {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  border-bottom: 1px solid var(--border);
-  background: var(--muted);
+  border-bottom: 1px solid var(--border-strong);
+  background: #f5f5f5;
 }
 
 .scenario-tab {
@@ -1063,7 +1129,7 @@ h2 {
   border: 0;
   border-right: 1px solid var(--border);
   background: transparent;
-  color: var(--muted-foreground);
+  color: var(--foreground-soft);
   padding: 16px 14px 18px;
   font: inherit;
   font-weight: 800;
@@ -1162,7 +1228,7 @@ h2 {
 
 .scenario-copy p {
   margin: 0;
-  color: var(--muted-foreground);
+  color: var(--foreground-soft);
   font-size: 1.03rem;
   line-height: 1.68;
 }
@@ -1557,26 +1623,27 @@ button:focus-visible {
     padding: 11px 16px;
   }
 
-  .command-row code {
-    flex-wrap: wrap;
-    font-size: 0.86rem;
-  }
-
-  .command-row code .command-url {
-    overflow-wrap: anywhere;
-    white-space: normal;
-  }
-
-  .command-head {
-    padding: 11px 14px;
+  .command-tabs {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .command-row {
-    padding: 16px 16px 10px;
+    flex-wrap: wrap;
+    align-items: stretch;
+    padding: 14px 16px 16px;
   }
 
-  .hero-command p {
-    display: none;
+  .command-row code {
+    font-size: 0.84rem;
+  }
+
+  .command-copy {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .command-panel-copy {
+    padding: 15px 16px 0;
   }
 
   .section {

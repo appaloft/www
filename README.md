@@ -16,7 +16,7 @@ Generated image assets live in `public/images/`.
 ## Production deployment
 
 Production deploys are handled by `.github/workflows/deploy.yml` with `appaloft/deploy-action@v1`
-and Appaloft CLI `v0.2.1`.
+and Appaloft CLI `v0.2.3`.
 
 Required GitHub repository variables:
 
@@ -29,6 +29,49 @@ Required GitHub repository secrets:
 - `APPALOFT_BETTER_AUTH_SECRET`: Better Auth runtime secret
 
 `appaloft.yml` deploys the Astro standalone server to `www.appaloft.com` and `appaloft.com`.
+
+## Pull request previews
+
+Pull request previews are handled by `.github/workflows/preview.yml` with `appaloft/setup-appaloft@v1`
+and Appaloft CLI `v0.2.3`.
+
+The workflow runs on `pull_request` `opened`, `reopened`, and `synchronize` events after the workflow
+exists on the default branch. It skips fork pull requests so repository secrets are not exposed to
+untrusted code.
+
+Preview deploys pass preview-specific runtime, network, auth, secret, and route settings directly to
+the CLI. The workflow does not generate a second deployment config file. Fields that differ from
+production are set explicitly with flags, including:
+
+```text
+--method workspace-commands
+--port 4321
+--upstream-protocol http
+--exposure-mode reverse-proxy
+--env APPALOFT_BETTER_AUTH_URL=http://<pull-request-number>.preview.appaloft.com
+--secret APPALOFT_BETTER_AUTH_SECRET=ci-env:APPALOFT_BETTER_AUTH_SECRET
+--preview pull-request
+--preview-id pr-<pull-request-number>
+--preview-domain-template <pull-request-number>.preview.appaloft.com
+--preview-tls-mode disabled
+--require-preview-url
+```
+
+Preview URLs use this shape:
+
+```text
+http://<pull-request-number>.preview.appaloft.com
+```
+
+Custom preview DNS must point to the Appaloft target server before a preview host can resolve:
+
+```text
+*.preview.appaloft.com -> 107.173.15.220
+```
+
+This is an Action-owned preview path. Product-level preview environments should later move policy,
+comments/checks, cleanup, quotas, and scoped preview secrets into Appaloft itself, likely through a
+GitHub App plus Appaloft control-plane or agent workflow.
 
 ## i18n and auth
 

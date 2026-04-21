@@ -24,7 +24,7 @@ jobs:
         env:
           APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
         with:
-          version: v0.2.1
+          version: v0.2.3
           config: appaloft.yml
           path-or-source: .
           target-host: ${{ vars.APPALOFT_SSH_HOST }}

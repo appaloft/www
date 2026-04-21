@@ -1,0 +1,119 @@
+name: Preview
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+concurrency:
+  group: appaloft-www-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: preview-pr-${{ github.event.pull_request.number }}
+      url: http://${{ github.event.pull_request.number }}.preview.appaloft.com
+    env:
+      APPALOFT_CLI_VERSION: v0.2.6
+      PREVIEW_HOST: ${{ github.event.pull_request.number }}.preview.appaloft.com
+      PREVIEW_ID: pr-${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Appaloft
+        uses: appaloft/setup-appaloft@v1
+        with:
+          version: ${{ env.APPALOFT_CLI_VERSION }}
+
+      - name: Prepare SSH key
+        shell: bash
+        run: |
+          key_path="${RUNNER_TEMP}/appaloft-preview-ssh-key"
+          umask 077
+          printf '%s\n' "$APPALOFT_SSH_PRIVATE_KEY" >"$key_path"
+          echo "APPALOFT_SSH_PRIVATE_KEY_FILE=$key_path" >>"$GITHUB_ENV"
+        env:
+          APPALOFT_SSH_PRIVATE_KEY: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+
+      - name: Deploy preview
+        shell: bash
+        env:
+          APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
+        run: |
+          appaloft deploy . \
+            --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
+            --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
+            --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
+            --server-proxy-kind traefik \
+            --state-backend ssh-pglite \
+            --method workspace-commands \
+            --install "bun install --frozen-lockfile" \
+            --build "bun run build" \
+            --start "bun ./dist/server/entry.mjs" \
+            --port 4321 \
+            --health-path / \
+            --upstream-protocol http \
+            --exposure-mode reverse-proxy \
+            --preview pull-request \
+            --preview-id "$PREVIEW_ID" \
+            --preview-domain-template "$PREVIEW_HOST" \
+            --preview-tls-mode disabled \
+            --require-preview-url \
+            --env "HOST=0.0.0.0" \
+            --env "PORT=4321" \
+            --env "APPALOFT_BETTER_AUTH_URL=http://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_TRUSTED_ORIGINS=http://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_COOKIE_DOMAIN=" \
+            --env "APPALOFT_BETTER_AUTH_TRUSTED_PROXY_HEADERS=true" \
+            --env "APPALOFT_LOCALE_COOKIE_DOMAIN=" \
+            --secret "APPALOFT_BETTER_AUTH_SECRET=ci-env:APPALOFT_BETTER_AUTH_SECRET"
+
+  cleanup:
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      APPALOFT_CLI_VERSION: v0.2.6
+      PREVIEW_ID: pr-${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Appaloft
+        uses: appaloft/setup-appaloft@v1
+        with:
+          version: ${{ env.APPALOFT_CLI_VERSION }}
+
+      - name: Prepare SSH key
+        shell: bash
+        run: |
+          key_path="${RUNNER_TEMP}/appaloft-preview-ssh-key"
+          umask 077
+          printf '%s\n' "$APPALOFT_SSH_PRIVATE_KEY" >"$key_path"
+          echo "APPALOFT_SSH_PRIVATE_KEY_FILE=$key_path" >>"$GITHUB_ENV"
+        env:
+          APPALOFT_SSH_PRIVATE_KEY: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+
+      - name: Cleanup preview
+        shell: bash
+        run: |
+          appaloft preview cleanup . \
+            --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
+            --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
+            --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
+            --server-proxy-kind traefik \
+            --state-backend ssh-pglite \
+            --preview pull-request \
+            --preview-id "$PREVIEW_ID"
