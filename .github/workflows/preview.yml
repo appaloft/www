@@ -22,7 +22,7 @@ jobs:
       name: preview-pr-${{ github.event.pull_request.number }}
       url: http://${{ github.event.pull_request.number }}.preview.appaloft.com
     env:
-      APPALOFT_CLI_VERSION: v0.2.6
+      APPALOFT_CLI_VERSION: latest
       PREVIEW_HOST: ${{ github.event.pull_request.number }}.preview.appaloft.com
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
     steps:
@@ -85,7 +85,7 @@ jobs:
     permissions:
       contents: read
     env:
-      APPALOFT_CLI_VERSION: v0.2.6
+      APPALOFT_CLI_VERSION: latest
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
@@ -113,7 +113,6 @@ jobs:
             --server-host "${{ vars.APPALOFT_SSH_HOST }}" \
             --server-ssh-username "${{ vars.APPALOFT_SSH_USER }}" \
             --server-ssh-private-key-file "$APPALOFT_SSH_PRIVATE_KEY_FILE" \
-            --server-proxy-kind traefik \
             --state-backend ssh-pglite \
             --preview pull-request \
             --preview-id "$PREVIEW_ID"

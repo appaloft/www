@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment:
+      name: production
+      url: https://www.appaloft.com
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,10 +27,10 @@ jobs:
         env:
           APPALOFT_BETTER_AUTH_SECRET: ${{ secrets.APPALOFT_BETTER_AUTH_SECRET }}
         with:
-          version: v0.2.3
+          version: latest
           config: appaloft.yml
-          path-or-source: .
-          target-host: ${{ vars.APPALOFT_SSH_HOST }}
-          target-ssh-username: ${{ vars.APPALOFT_SSH_USER }}
-          target-private-key: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
-          target-proxy-kind: traefik
+          source: .
+          ssh-host: ${{ vars.APPALOFT_SSH_HOST }}
+          ssh-user: ${{ vars.APPALOFT_SSH_USER }}
+          ssh-private-key: ${{ secrets.APPALOFT_SSH_PRIVATE_KEY }}
+          server-proxy-kind: traefik
