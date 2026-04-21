@@ -171,8 +171,15 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  line-height: 0;
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
   font-weight: 700;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 32px;
 }
 
 .brand-mark {
@@ -1552,6 +1559,10 @@ button:focus-visible {
   .brand-mark {
     width: 32px;
     height: 32px;
+  }
+
+  .brand-logo {
+    height: 28px;
   }
 
   .nav-menu-toggle {
