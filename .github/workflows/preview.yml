@@ -20,7 +20,7 @@ jobs:
       contents: read
     environment:
       name: preview-pr-${{ github.event.pull_request.number }}
-      url: https://${{ github.event.pull_request.number }}.preview.appaloft.com
+      url: http://${{ github.event.pull_request.number }}.preview.appaloft.com
     env:
       APPALOFT_CLI_VERSION: v0.2.6
       PREVIEW_HOST: ${{ github.event.pull_request.number }}.preview.appaloft.com
@@ -68,12 +68,12 @@ jobs:
             --preview pull-request \
             --preview-id "$PREVIEW_ID" \
             --preview-domain-template "$PREVIEW_HOST" \
-            --preview-tls-mode auto \
+            --preview-tls-mode disabled \
             --require-preview-url \
             --env "HOST=0.0.0.0" \
             --env "PORT=4321" \
-            --env "APPALOFT_BETTER_AUTH_URL=https://${PREVIEW_HOST}" \
-            --env "APPALOFT_BETTER_AUTH_TRUSTED_ORIGINS=https://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_URL=http://${PREVIEW_HOST}" \
+            --env "APPALOFT_BETTER_AUTH_TRUSTED_ORIGINS=http://${PREVIEW_HOST}" \
             --env "APPALOFT_BETTER_AUTH_COOKIE_DOMAIN=" \
             --env "APPALOFT_BETTER_AUTH_TRUSTED_PROXY_HEADERS=true" \
             --env "APPALOFT_LOCALE_COOKIE_DOMAIN=" \
