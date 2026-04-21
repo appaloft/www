@@ -237,45 +237,45 @@ function highlightScenarioLine(line: string, badge: string) {
             </div>
           </div>
 
-          <div
-            class="hero-command"
-            aria-label={copy.hero.installLabel}
-            data-command-shell
-            data-copy-ready={copy.hero.copyCommand}
-            data-copy-done={copy.hero.copiedCommand}
-          >
-            <div class="command-head">
-              <span>{copy.hero.installLabel}</span>
-              <button class="command-copy" type="button" data-copy-command>{copy.hero.copyCommand}</button>
-            </div>
-            <div class="command-tabs" role="tablist" aria-label={copy.hero.installLabel}>
+          <div class="hero-command-block">
+            <p class="hero-command-kicker">{copy.hero.installLabel}</p>
+            <div
+              class="hero-command"
+              aria-label={copy.hero.installLabel}
+              data-command-shell
+              data-copy-ready={copy.hero.copyCommand}
+              data-copy-done={copy.hero.copiedCommand}
+            >
+              <div class="command-tabs" role="tablist" aria-label={copy.hero.installLabel}>
+                {copy.hero.installOptions.map((option, index) => (
+                  <button
+                    class={index === 0 ? "command-tab is-active" : "command-tab"}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === 0 ? "true" : "false"}
+                    data-install-tab={option.key}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
               {copy.hero.installOptions.map((option, index) => (
-                <button
-                  class={index === 0 ? "command-tab is-active" : "command-tab"}
-                  type="button"
-                  role="tab"
-                  aria-selected={index === 0 ? "true" : "false"}
-                  data-install-tab={option.key}
-                >
-                  {option.label}
-                </button>
+                <div class={index === 0 ? "command-panel is-active" : "command-panel"} data-install-panel={option.key}>
+                  <div class="command-panel-copy">
+                    <strong>{option.title}</strong>
+                    <p>{option.note}</p>
+                  </div>
+                  <div class="command-row">
+                    <code data-command-value data-copy-value={option.command}>
+                      {highlightCliLine(option.command).map((token) => (
+                        <span class={`code-token ${token.className}`}>{token.text}</span>
+                      ))}
+                    </code>
+                    <button class="command-copy" type="button" data-copy-command>{copy.hero.copyCommand}</button>
+                  </div>
+                </div>
               ))}
             </div>
-            {copy.hero.installOptions.map((option, index) => (
-              <div class={index === 0 ? "command-panel is-active" : "command-panel"} data-install-panel={option.key}>
-                <div class="command-panel-copy">
-                  <strong>{option.title}</strong>
-                  <p>{option.note}</p>
-                </div>
-                <div class="command-row">
-                  <code data-command-value data-copy-value={option.command}>
-                    {highlightCliLine(option.command).map((token) => (
-                      <span class={`code-token ${token.className}`}>{token.text}</span>
-                    ))}
-                  </code>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </header>
