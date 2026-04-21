@@ -179,7 +179,7 @@ img {
 .brand-logo {
   display: block;
   width: auto;
-  height: 32px;
+  height: 40px;
 }
 
 .brand-mark {
@@ -1562,7 +1562,7 @@ button:focus-visible {
   }
 
   .brand-logo {
-    height: 28px;
+    height: 34px;
   }
 
   .nav-menu-toggle {
