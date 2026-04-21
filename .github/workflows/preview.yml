@@ -90,9 +90,11 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: read
+      deployments: write
     env:
       APPALOFT_CLI_VERSION: latest
       PREVIEW_ID: pr-${{ github.event.pull_request.number }}
+      PREVIEW_ENVIRONMENT: preview-pr-${{ github.event.pull_request.number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,3 +124,31 @@ jobs:
             --state-backend ssh-pglite \
             --preview pull-request \
             --preview-id "$PREVIEW_ID"
+
+      - name: Delete GitHub preview deployments
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          deployment_ids="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/deployments?environment=${PREVIEW_ENVIRONMENT}&per_page=100" --jq '.[].id')"
+          if [[ -z "$deployment_ids" ]]; then
+            exit 0
+          fi
+
+          while IFS= read -r deployment_id; do
+            [[ -n "$deployment_id" ]] || continue
+            gh api "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}" \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json"
+          done <<<"$deployment_ids"
+
+      - name: Delete GitHub preview environment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/environments/${PREVIEW_ENVIRONMENT}" >/dev/null 2>&1; then
+            gh api "repos/${GITHUB_REPOSITORY}/environments/${PREVIEW_ENVIRONMENT}" \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json"
+          fi
