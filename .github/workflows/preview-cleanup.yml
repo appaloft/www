@@ -55,7 +55,7 @@ jobs:
       - name: Delete GitHub preview deployments
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.PREVIEW_CLEANUP_TOKEN || github.token }}
         run: |
           deployment_ids="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/deployments?environment=${PREVIEW_ENVIRONMENT}&per_page=100" --jq '.[].id')"
           if [[ -z "$deployment_ids" ]]; then
@@ -80,7 +80,7 @@ jobs:
       - name: Delete GitHub preview environment
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.PREVIEW_CLEANUP_TOKEN || github.token }}
         run: |
           if gh api "repos/${GITHUB_REPOSITORY}/environments/${PREVIEW_ENVIRONMENT}" >/dev/null 2>&1; then
             gh api "repos/${GITHUB_REPOSITORY}/environments/${PREVIEW_ENVIRONMENT}" \
