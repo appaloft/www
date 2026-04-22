@@ -7,9 +7,11 @@ function initNavMenu(button: HTMLButtonElement) {
     return;
   }
 
+  const menuElement = menu;
+
   function setOpen(isOpen: boolean) {
     button.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    menu.classList.toggle("is-open", isOpen);
+    menuElement.classList.toggle("is-open", isOpen);
   }
 
   button.addEventListener("click", () => {
@@ -31,51 +33,12 @@ function initNavMenu(button: HTMLButtonElement) {
   document.addEventListener("click", (event) => {
     const target = event.target;
 
-    if (!(target instanceof Node) || button.contains(target) || menu.contains(target)) {
+    if (!(target instanceof Node) || button.contains(target) || menuElement.contains(target)) {
       return;
     }
 
     setOpen(false);
   });
-}
-
-function initDomainDemo(demo: HTMLElement) {
-  let hasStarted = false;
-  let isIntersecting = false;
-  let observer: IntersectionObserver | undefined;
-
-  function canStart() {
-    return document.visibilityState === "visible" && isIntersecting;
-  }
-
-  function tryStart() {
-    if (hasStarted || !canStart()) {
-      return;
-    }
-
-    hasStarted = true;
-    demo.classList.add("is-running");
-    observer?.disconnect();
-    document.removeEventListener("visibilitychange", tryStart);
-    window.removeEventListener("focus", tryStart);
-  }
-
-  if ("IntersectionObserver" in window) {
-    observer = new IntersectionObserver(
-      (entries) => {
-        isIntersecting = entries.some((entry) => entry.isIntersecting);
-        tryStart();
-      },
-      { threshold: 0.28 },
-    );
-    observer.observe(demo);
-  } else {
-    isIntersecting = true;
-  }
-
-  document.addEventListener("visibilitychange", tryStart);
-  window.addEventListener("focus", tryStart);
-  tryStart();
 }
 
 function copyCommand(button: HTMLButtonElement) {
@@ -148,6 +111,11 @@ function initInstallTabs(shell: HTMLElement) {
 function initScenarioCarousel(carousel: HTMLElement) {
   const tabs = Array.from(carousel.querySelectorAll<HTMLButtonElement>("[data-scenario-tab]"));
   const panels = Array.from(carousel.querySelectorAll<HTMLElement>("[data-scenario-panel]"));
+
+  if (!tabs.length || !panels.length) {
+    return;
+  }
+
   let activeIndex = 0;
   let intervalId: number | undefined;
 
@@ -167,8 +135,12 @@ function initScenarioCarousel(carousel: HTMLElement) {
     });
   }
 
-  function start() {
+  function stop() {
     window.clearInterval(intervalId);
+  }
+
+  function start() {
+    stop();
     intervalId = window.setInterval(() => {
       setActive(activeIndex + 1);
     }, carouselIntervalMs);
@@ -179,13 +151,15 @@ function initScenarioCarousel(carousel: HTMLElement) {
       setActive(index);
       start();
     });
-  });
 
-  carousel.addEventListener("mouseenter", () => {
-    window.clearInterval(intervalId);
+    tab.addEventListener("mouseenter", () => {
+      setActive(index);
+      stop();
+    });
   });
 
   carousel.addEventListener("mouseleave", start);
+  carousel.addEventListener("mouseenter", stop);
 
   setActive(0);
   start();
@@ -200,7 +174,5 @@ document.querySelectorAll<HTMLButtonElement>("[data-copy-command]").forEach((but
 document.querySelectorAll<HTMLButtonElement>("[data-nav-menu-toggle]").forEach(initNavMenu);
 
 document.querySelectorAll<HTMLElement>("[data-command-shell]").forEach(initInstallTabs);
-
-document.querySelectorAll<HTMLElement>("[data-domain-demo]").forEach(initDomainDemo);
 
 document.querySelectorAll<HTMLElement>("[data-scenario-carousel]").forEach(initScenarioCarousel);

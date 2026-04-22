@@ -109,7 +109,7 @@ function highlightScenarioLine(line: string, badge: string) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={copy.meta.description} />
-    <meta name="theme-color" content="#18213B" />
+    <meta name="theme-color" content="#f7f8fb" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -127,7 +127,8 @@ function highlightScenarioLine(line: string, badge: string) {
     <a class="skip-link" href="#main">{copy.skipLink}</a>
     <div class="site-shell">
       <header class="hero">
-        <div class="hero-background" aria-hidden="true"></div>
+        <div class="hero-orbit hero-orbit-left" aria-hidden="true"></div>
+        <div class="hero-orbit hero-orbit-right" aria-hidden="true"></div>
         <nav class="nav" aria-label={copy.nav.label}>
           <a class="brand" href={localePath(locale)} aria-label={copy.nav.home}>
             <img
@@ -139,7 +140,9 @@ function highlightScenarioLine(line: string, badge: string) {
             />
           </a>
           <div class="nav-links">
-            <a href="#examples">{copy.nav.platform}</a>
+            <a href="#path">{copy.nav.platform}</a>
+            <a href="#surfaces">{copy.nav.surfaces}</a>
+            <a href={githubHref}>{copy.nav.github}</a>
           </div>
           <button
             class="nav-menu-toggle"
@@ -185,12 +188,13 @@ function highlightScenarioLine(line: string, badge: string) {
             <button class="nav-cta auth-connect" type="button" data-auth-connect hidden={!isGitHubAuthConfigured}>
               {copy.auth.connectGithub}
             </button>
-            <a class="nav-cta" href={consoleHref}>{copy.nav.console}</a>
+            <a class="nav-cta nav-cta-primary" href={consoleHref}>{copy.nav.console}</a>
           </div>
         </nav>
 
         <div class="hero-inner">
           <div class="hero-copy">
+            <p class="hero-kicker">{copy.hero.eyebrow}</p>
             <div class="hero-pronunciation" aria-label={copy.hero.pronunciation.label}>
               <span class="hero-pronunciation-name">{copy.hero.pronunciation.name}</span>
               <span class="hero-pronunciation-ipa">{copy.hero.pronunciation.ipa}</span>
@@ -200,55 +204,19 @@ function highlightScenarioLine(line: string, badge: string) {
               </span>
             </div>
             <h1>{copy.hero.title}</h1>
-            <div class="domain-demo" aria-label={copy.hero.domainDemo.label} data-domain-demo>
-              <div class="domain-window">
-                <div class="domain-chrome" aria-hidden="true">
-                  <span></span><span></span><span></span>
-                </div>
-                <div class="domain-address" aria-hidden="true">
-                  <span class="domain-security">
-                    <span class="domain-lock"></span>
-                  </span>
-                  <span class="domain-url-stack">
-                    <span class="domain-address-state is-local">
-                      <span class="domain-url">{`http://${copy.hero.domainDemo.local}`}</span>
-                    </span>
-                    <span class="domain-address-state is-live">
-                      <span class="domain-url">{`https://${copy.hero.domainDemo.live}`}</span>
-                    </span>
-                  </span>
-                </div>
-                <span class="sr-only">{copy.hero.domainDemo.screenReader}</span>
-                <div class="domain-deploy-command" aria-hidden="true">
-                  <div class="domain-terminal-input">
-                    <span class="domain-command-prompt">$</span>
-                    <span class="domain-command-text">
-                      <strong>{copy.hero.domainDemo.deploy}</strong>
-                    </span>
-                    <span class="domain-command-cursor"></span>
-                  </div>
-                  <div class="domain-terminal-output">
-                    {copy.hero.domainDemo.terminalLines.map((line, index) => (
-                      <span class={index === 3 ? "domain-terminal-line line-4 is-typed" : `domain-terminal-line line-${index + 1}`}>
-                        <span class="domain-terminal-status" aria-hidden="true">
-                          <span class="status-loading"></span>
-                          <span class="status-done">[ok]</span>
-                        </span>
-                        <span class="domain-terminal-text">{line}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <p class="hero-body">{copy.hero.body}</p>
             <div class="hero-actions" aria-label={copy.hero.actionsLabel}>
-              <a class="button button-primary" href="#examples">{copy.hero.primaryAction}</a>
+              <a class="button button-primary" href="#path">{copy.hero.primaryAction}</a>
               <a class="button button-secondary" href={releasesHref}>{copy.hero.secondaryAction}</a>
             </div>
-          </div>
-
-          <div class="hero-command-block">
-            <p class="hero-command-kicker">{copy.hero.installLabel}</p>
+            <div class="hero-chip-grid" aria-label={copy.hero.visual.label}>
+              {copy.hero.chips.map((chip) => (
+                <div class="hero-chip">
+                  <strong>{chip.label}</strong>
+                  <span>{chip.detail}</span>
+                </div>
+              ))}
+            </div>
             <div
               class="hero-command"
               aria-label={copy.hero.installLabel}
@@ -256,6 +224,11 @@ function highlightScenarioLine(line: string, badge: string) {
               data-copy-ready={copy.hero.copyCommand}
               data-copy-done={copy.hero.copiedCommand}
             >
+              <div class="command-head">
+                <div>
+                  <p class="command-kicker">{copy.hero.installLabel}</p>
+                </div>
+              </div>
               <div class="command-tabs" role="tablist" aria-label={copy.hero.installLabel}>
                 {copy.hero.installOptions.map((option, index) => (
                   <button
@@ -287,14 +260,98 @@ function highlightScenarioLine(line: string, badge: string) {
               ))}
             </div>
           </div>
+
+          <div class="hero-visual" aria-label={copy.hero.visual.label}>
+            <div class="hero-visual-header">
+              <p>{copy.hero.visual.kicker}</p>
+              <strong>{copy.hero.visual.title}</strong>
+              <span>{copy.hero.visual.body}</span>
+            </div>
+            <div class="hero-visual-stage">
+              <img
+                class="hero-illustration"
+                src="/images/appaloft-control-deck.png"
+                alt=""
+                width="1567"
+                height="1004"
+                loading="eager"
+                decoding="async"
+              />
+              <div class="hero-visual-card hero-visual-card-command" aria-hidden="true">
+                <div class="hero-visual-card-head">
+                  <span>{copy.hero.domainDemo.localLabel}</span>
+                  <strong>{copy.hero.domainDemo.local}</strong>
+                </div>
+                <code>{copy.hero.domainDemo.deploy}</code>
+                <div class="hero-mini-log">
+                  {copy.hero.domainDemo.terminalLines.map((line) => (
+                    <span>{line}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="hero-visual-card hero-visual-card-status" aria-hidden="true">
+                <div class="hero-visual-card-head">
+                  <span>{copy.hero.domainDemo.liveLabel}</span>
+                  <strong>{copy.hero.domainDemo.live}</strong>
+                </div>
+                <div class="hero-status-grid">
+                  <div>
+                    <small>Status</small>
+                    <span>{copy.hero.visual.status}</span>
+                  </div>
+                  <div>
+                    <small>{copy.hero.visual.regionLabel}</small>
+                    <span>{copy.hero.visual.region}</span>
+                  </div>
+                  <div>
+                    <small>{copy.hero.visual.uptimeLabel}</small>
+                    <span>{copy.hero.visual.uptime}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-route" aria-hidden="true">
+                <span>{copy.hero.domainDemo.localLabel}</span>
+                <span>{copy.hero.domainDemo.appaloftLabel}</span>
+                <span>{copy.hero.domainDemo.liveLabel}</span>
+              </div>
+              <div class="hero-release-path" aria-hidden="true">
+                <span>{copy.hero.visual.releasePath}</span>
+                <div class="hero-release-line">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+              <span class="sr-only">{copy.hero.domainDemo.screenReader}</span>
+            </div>
+          </div>
         </div>
       </header>
 
       <main id="main">
-        <section id="examples" class="section scenario-section">
+        <section id="path" class="section highlight-section">
           <div class="wrap">
-            <div class="compact-heading">
-              <p class="kicker">{copy.scenarios.kicker}</p>
+            <div class="section-heading">
+              <p class="section-kicker">{copy.highlights.kicker}</p>
+              <h2>{copy.highlights.title}</h2>
+              <p>{copy.highlights.body}</p>
+            </div>
+            <div class="highlight-grid">
+              {copy.highlights.cards.map((card) => (
+                <article class="highlight-card">
+                  <span class="highlight-index">{card.eyebrow}</span>
+                  <h3>{card.title}</h3>
+                  <p>{card.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="surfaces" class="section scenario-section">
+          <div class="wrap scenario-shell">
+            <div class="section-heading scenario-heading">
+              <p class="section-kicker">{copy.scenarios.kicker}</p>
               <h2>{copy.scenarios.title}</h2>
               <p>{copy.scenarios.body}</p>
             </div>
@@ -309,8 +366,8 @@ function highlightScenarioLine(line: string, badge: string) {
                     aria-selected={index === 0 ? "true" : "false"}
                     data-scenario-tab={String(index)}
                   >
-                    <span>{scenario.label}</span>
-                    <span class="scenario-progress" aria-hidden="true"></span>
+                    <span class="scenario-tab-label">{scenario.label}</span>
+                    <span class="scenario-tab-title">{scenario.title}</span>
                   </button>
                 ))}
               </div>
@@ -343,10 +400,11 @@ function highlightScenarioLine(line: string, badge: string) {
                       {scenario.kind === "desktop" && (
                         <div class="desktop-mock">
                           <div class="mock-sidebar">
-                            <span>Appaloft</span>
+                            <strong>Appaloft</strong>
                             <small>Servers</small>
                             <small>Apps</small>
                             <small>Deploys</small>
+                            <small>Logs</small>
                           </div>
                           <div class="mock-main">
                             {scenario.cards.map(([name, status, meta]) => (
@@ -388,7 +446,6 @@ function highlightScenarioLine(line: string, badge: string) {
             </div>
           </div>
         </section>
-
       </main>
 
       <footer class="footer">
