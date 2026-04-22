@@ -16,7 +16,7 @@ Generated image assets live in `public/images/`.
 ## Production deployment
 
 Production deploys are handled by `.github/workflows/deploy.yml` with `appaloft/deploy-action@v1`
-and Appaloft CLI `v0.2.3`.
+and Appaloft CLI `v0.2.12`.
 
 Required GitHub repository variables:
 
@@ -33,7 +33,7 @@ Required GitHub repository secrets:
 ## Pull request previews
 
 Pull request previews are handled by `.github/workflows/preview.yml` with `appaloft/setup-appaloft@v1`
-and Appaloft CLI `v0.2.3`.
+and Appaloft CLI `v0.2.12`.
 
 The workflow runs on `pull_request` `opened`, `reopened`, and `synchronize` events after the workflow
 exists on the default branch. It skips fork pull requests so repository secrets are not exposed to
@@ -45,6 +45,7 @@ production are set explicitly with flags, including:
 
 ```text
 --method workspace-commands
+--runtime-name preview-{pr_number}
 --port 4321
 --upstream-protocol http
 --exposure-mode reverse-proxy

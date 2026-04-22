@@ -66,6 +66,7 @@ jobs:
             --install "bun install --frozen-lockfile" \
             --build "bun run build" \
             --start "bun ./dist/server/entry.mjs" \
+            --runtime-name "preview-{pr_number}" \
             --port 4321 \
             --health-path / \
             --upstream-protocol http \
