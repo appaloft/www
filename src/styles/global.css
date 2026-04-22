@@ -1114,119 +1114,118 @@ h2 {
   line-height: 1.72;
 }
 
-.scenario-carousel {
-  overflow: hidden;
+.scenario-list {
+  display: grid;
+  gap: 28px;
+}
+
+.scenario-card {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.84fr) minmax(0, 1fr);
+  gap: 34px;
+  align-items: center;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--card);
-  box-shadow: var(--shadow);
-}
-
-.scenario-tabs {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  border-bottom: 1px solid var(--border-strong);
-  background: #f5f5f5;
-}
-
-.scenario-tab {
-  position: relative;
-  min-height: 66px;
-  overflow: hidden;
-  border: 0;
-  border-right: 1px solid var(--border);
-  background: transparent;
-  color: var(--foreground-soft);
-  padding: 16px 14px 18px;
-  font: inherit;
-  font-weight: 800;
-  text-align: left;
-}
-
-.scenario-tab:last-child {
-  border-right: 0;
-}
-
-.scenario-tab.is-active {
-  color: var(--foreground);
-  background: var(--card);
-}
-
-.scenario-progress {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 4px;
-  background: var(--border);
-}
-
-.scenario-tab.is-active .scenario-progress::before {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--primary);
-  transform-origin: left;
-  animation: scenario-progress 5.2s linear;
-  content: "";
-}
-
-@keyframes scenario-progress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.scenario-stage {
-  position: relative;
-  overflow: hidden;
-  min-height: 430px;
-}
-
-.scenario-panel {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: minmax(280px, 0.5fr) minmax(0, 0.82fr);
-  gap: 32px;
-  align-items: stretch;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.92)),
+    var(--card);
   padding: 34px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms ease;
+  box-shadow: 0 24px 54px rgba(24, 24, 27, 0.08);
 }
 
-.scenario-panel.is-active {
-  position: relative;
-  opacity: 1;
-  pointer-events: auto;
+.scenario-card.is-reversed .scenario-copy {
+  order: 2;
+}
+
+.scenario-card.is-reversed .scenario-visual {
+  order: 1;
 }
 
 .scenario-copy {
   display: flex;
-  min-height: 320px;
   flex-direction: column;
   justify-content: center;
+  gap: 0;
+}
+
+.scenario-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.scenario-icon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  place-items: center;
+  border: 1px solid rgba(24, 24, 27, 0.08);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.scenario-icon svg,
+.cloud-tile-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.scenario-icon-ai {
+  background: linear-gradient(180deg, #eff6ff, #dbeafe);
+  color: #2563eb;
+}
+
+.scenario-icon-docker {
+  background: linear-gradient(180deg, #e0f2fe, #dbeafe);
+  color: #0b69ff;
+}
+
+.scenario-icon-action {
+  background: linear-gradient(180deg, #18181b, #09090b);
+  color: #ffffff;
+}
+
+.scenario-icon-desktop {
+  background: linear-gradient(180deg, #fff7ed, #ffedd5);
+  color: #1f2937;
+}
+
+.scenario-icon-cloud {
+  background: linear-gradient(180deg, #eff6ff, #e0f2fe);
+  color: #2563eb;
+}
+
+.scenario-heading-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.scenario-label {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 .scenario-badge {
   width: fit-content;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--muted);
-  color: var(--foreground);
-  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--foreground-soft);
+  padding: 6px 10px;
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
+  text-transform: lowercase;
 }
 
 .scenario-copy h3 {
-  margin: 18px 0 12px;
+  margin: 20px 0 12px;
   color: var(--foreground);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 2rem;
@@ -1238,6 +1237,38 @@ h2 {
   color: var(--foreground-soft);
   font-size: 1.03rem;
   line-height: 1.68;
+}
+
+.scenario-points {
+  display: grid;
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scenario-points li {
+  position: relative;
+  padding-left: 28px;
+  color: var(--foreground);
+  font-size: 0.98rem;
+  line-height: 1.64;
+}
+
+.scenario-points li::before {
+  position: absolute;
+  top: 0.18rem;
+  left: 0;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+  font-size: 0.76rem;
+  font-weight: 900;
+  content: "✓";
 }
 
 .scenario-visual {
@@ -1297,15 +1328,27 @@ h2 {
   color: #d4d4d8;
 }
 
-.terminal-terminal .terminal-line::before {
+.terminal-docker .terminal-line::before {
   display: inline-block;
   width: 1.45ch;
   color: #71717a;
   content: "$";
 }
 
-.terminal-workflow .terminal-line {
+.terminal-github .terminal-line {
   color: #a1a1aa;
+}
+
+.terminal-docker pre {
+  background:
+    linear-gradient(90deg, rgba(14, 116, 244, 0.12), transparent 42%),
+    #09090b;
+}
+
+.terminal-github pre {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 38%),
+    #09090b;
 }
 
 .code-token {
@@ -1342,115 +1385,55 @@ h2 {
   color: #34d399;
 }
 
-.desktop-mock,
-.chat-mock,
-.cloud-mock {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  box-shadow: 0 18px 42px rgba(24, 24, 27, 0.08);
-}
-
-.desktop-mock {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  min-height: 320px;
+.scenario-shot {
+  margin: 0;
   overflow: hidden;
+  border: 1px solid rgba(24, 24, 27, 0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top center, rgba(251, 191, 36, 0.08), transparent 32%),
+    linear-gradient(180deg, #fffdf7, #ffffff);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
 }
 
-.mock-sidebar {
-  display: grid;
-  align-content: start;
-  gap: 16px;
-  border-right: 1px solid var(--border);
-  background: var(--muted);
-  color: var(--muted-foreground);
-  padding: 22px;
+.scenario-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-.mock-sidebar span {
-  color: var(--foreground);
-  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-weight: 800;
-}
-
-.mock-main {
-  display: grid;
-  gap: 12px;
-  align-content: center;
-  padding: 22px;
-}
-
-.mock-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  padding: 16px;
-}
-
-.mock-row span {
-  color: var(--foreground);
-  font-weight: 800;
-}
-
-.mock-row small {
-  grid-column: 1 / -1;
-  color: var(--muted-foreground);
-}
-
-.chat-mock {
-  display: grid;
-  gap: 14px;
-  padding: 24px;
-}
-
-.chat-line {
-  display: grid;
-  gap: 6px;
-  max-width: 84%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--muted);
-  padding: 14px;
-}
-
-.chat-line.is-user {
-  justify-self: end;
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.chat-line small {
-  color: var(--muted-foreground);
-  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-weight: 800;
-}
-
-.chat-line.is-user small {
-  color: rgba(255, 255, 255, 0.68);
+.scenario-shot-ai {
+  transform: translateY(-2px);
 }
 
 .cloud-mock {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  padding: 24px;
 }
 
 .cloud-tile {
   display: grid;
-  min-height: 160px;
+  min-height: 190px;
   align-content: end;
-  gap: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  gap: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
   background:
-    linear-gradient(180deg, var(--accent-soft), transparent),
+    linear-gradient(180deg, rgba(37, 99, 235, 0.14), transparent),
     var(--card);
-  padding: 18px;
+  padding: 22px;
+  box-shadow: 0 16px 40px rgba(24, 24, 27, 0.06);
+}
+
+.cloud-tile-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #2563eb;
 }
 
 .cloud-tile span {
@@ -1518,18 +1501,13 @@ button:focus-visible {
 
   .hero-inner,
   .compact-heading,
-  .scenario-panel {
+  .scenario-card {
     grid-template-columns: 1fr;
   }
 
   .hero h1 {
     font-size: 3.2rem;
   }
-
-  .scenario-tabs {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
 }
 
 @media (max-width: 640px) {
@@ -1665,27 +1643,14 @@ button:focus-visible {
     font-size: 2rem;
   }
 
-  .scenario-tabs {
-    grid-template-columns: 1fr;
-  }
-
-  .scenario-tab {
-    min-height: 52px;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-    padding: 13px 14px 15px;
-  }
-
-  .scenario-stage {
-    min-height: 0;
-  }
-
-  .scenario-panel {
+  .scenario-card {
     padding: 20px;
+    gap: 20px;
   }
 
-  .scenario-copy {
-    min-height: auto;
+  .scenario-card.is-reversed .scenario-copy,
+  .scenario-card.is-reversed .scenario-visual {
+    order: initial;
   }
 
   .scenario-copy h3 {
@@ -1697,21 +1662,20 @@ button:focus-visible {
     font-size: 0.82rem;
   }
 
-  .desktop-mock {
-    grid-template-columns: 1fr;
+  .scenario-header {
+    align-items: flex-start;
   }
 
-  .mock-sidebar {
-    grid-template-columns: repeat(4, auto);
-    align-items: center;
-    gap: 10px;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-    padding: 14px;
+  .scenario-icon {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
   }
 
-  .mock-sidebar small {
-    font-size: 0.72rem;
+  .scenario-icon svg,
+  .cloud-tile-icon svg {
+    width: 24px;
+    height: 24px;
   }
 
   .cloud-mock {
@@ -1737,8 +1701,7 @@ button:focus-visible {
   .domain-terminal-line,
   .domain-terminal-line.is-typed .domain-terminal-text,
   .status-loading,
-  .status-done,
-  .scenario-tab.is-active .scenario-progress::before {
+  .status-done {
     animation: none;
   }
 

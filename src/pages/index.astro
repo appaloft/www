@@ -99,7 +99,60 @@ function highlightWorkflowLine(line: string): CodeToken[] {
 }
 
 function highlightScenarioLine(line: string, badge: string) {
-  return badge === "workflow" ? highlightWorkflowLine(line) : highlightCliLine(line);
+  return badge === "github" ? highlightWorkflowLine(line) : highlightCliLine(line);
+}
+
+function getScenarioIcon(key: string) {
+  switch (key) {
+    case "ai":
+      return `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3.5 13.8 8.2 18.5 10 13.8 11.8 12 16.5 10.2 11.8 5.5 10 10.2 8.2 12 3.5Z" fill="currentColor"/>
+          <path d="M18.3 14.4 19.2 16.8 21.6 17.7 19.2 18.6 18.3 21 17.4 18.6 15 17.7 17.4 16.8 18.3 14.4Z" fill="currentColor" opacity="0.78"/>
+          <path d="M6.2 15.2 7 17.1 8.9 17.9 7 18.7 6.2 20.6 5.4 18.7 3.5 17.9 5.4 17.1 6.2 15.2Z" fill="currentColor" opacity="0.52"/>
+        </svg>
+      `;
+    case "docker":
+      return `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4.1" y="8" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="6.95" y="8" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="9.8" y="8" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="12.65" y="8" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="6.95" y="5.15" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="9.8" y="5.15" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <rect x="12.65" y="5.15" width="2.35" height="2.35" rx=".32" fill="currentColor"/>
+          <path d="M3.45 11.55H16.3c.12 1.88-.38 3.34-1.5 4.39-1.12 1.04-2.68 1.56-4.69 1.56-2.1 0-3.77-.57-5-1.71-1.23-1.14-1.78-2.55-1.66-4.24Z" fill="currentColor"/>
+          <path d="M16.05 11.95c.7-.55 1.53-.82 2.48-.82.65 0 1.15.1 1.47.31-.15 1.27-.66 2.22-1.52 2.84-.86.62-1.95.93-3.27.93" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    case "action":
+      return `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3.1c-4.97 0-9 4.03-9 9 0 3.98 2.58 7.36 6.16 8.55.45.08.61-.2.61-.44 0-.22-.01-.93-.01-1.69-2.5.54-3.03-1.06-3.03-1.06-.4-1.03-.99-1.3-.99-1.3-.81-.56.06-.55.06-.55.9.06 1.38.92 1.38.92.8 1.37 2.1.98 2.61.75.08-.58.31-.98.56-1.2-2-.23-4.11-1-4.11-4.46 0-.98.35-1.78.92-2.41-.09-.23-.4-1.17.09-2.44 0 0 .75-.24 2.47.92a8.6 8.6 0 0 1 4.5 0c1.71-1.16 2.46-.92 2.46-.92.49 1.27.18 2.21.09 2.44.57.63.92 1.43.92 2.41 0 3.47-2.11 4.23-4.12 4.45.32.28.6.82.6 1.66 0 1.2-.01 2.16-.01 2.45 0 .24.16.52.62.43A9 9 0 0 0 21 12.1c0-4.97-4.03-9-9-9Z" fill="currentColor"/>
+        </svg>
+      `;
+    case "desktop":
+      return `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.2" y="4.2" width="17.6" height="12.8" rx="2.2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3.8 8.25h16.4" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8.2 20h7.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="6.3" cy="6.2" r=".8" fill="currentColor"/>
+          <circle cx="8.9" cy="6.2" r=".8" fill="currentColor" opacity=".74"/>
+          <circle cx="11.5" cy="6.2" r=".8" fill="currentColor" opacity=".48"/>
+        </svg>
+      `;
+    case "cloud":
+      return `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8.8 18.5h8.25a4.45 4.45 0 0 0 .22-8.9 5.8 5.8 0 0 0-11.12 1.8A3.75 3.75 0 0 0 8.8 18.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="m12 8.2 2.55 2.55M12 8.2l-2.55 2.55M12 8.2V15.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    default:
+      return "";
+  }
 }
 ---
 
@@ -299,92 +352,65 @@ function highlightScenarioLine(line: string, badge: string) {
               <p>{copy.scenarios.body}</p>
             </div>
 
-            <div class="scenario-carousel" aria-label={copy.scenarios.label} data-scenario-carousel>
-              <div class="scenario-tabs" role="tablist">
-                {copy.scenarios.items.map((scenario, index) => (
-                  <button
-                    class={index === 0 ? "scenario-tab is-active" : "scenario-tab"}
-                    type="button"
-                    role="tab"
-                    aria-selected={index === 0 ? "true" : "false"}
-                    data-scenario-tab={String(index)}
-                  >
-                    <span>{scenario.label}</span>
-                    <span class="scenario-progress" aria-hidden="true"></span>
-                  </button>
-                ))}
-              </div>
-
-              <div class="scenario-stage">
-                {copy.scenarios.items.map((scenario, index) => (
-                  <article
-                    class={index === 0 ? "scenario-panel is-active" : "scenario-panel"}
-                    data-scenario-panel={String(index)}
-                    aria-hidden={index === 0 ? "false" : "true"}
-                  >
-                    <div class="scenario-copy">
-                      <span class="scenario-badge">{scenario.badge}</span>
-                      <h3>{scenario.title}</h3>
-                      <p>{scenario.body}</p>
+            <div class="scenario-list" aria-label={copy.scenarios.label}>
+              {copy.scenarios.items.map((scenario, index) => (
+                <article class={index % 2 === 1 ? "scenario-card is-reversed" : "scenario-card"}>
+                  <div class="scenario-copy">
+                    <div class="scenario-header">
+                      <span class={`scenario-icon scenario-icon-${scenario.key}`} aria-hidden="true" set:html={getScenarioIcon(scenario.key)}></span>
+                      <div class="scenario-heading-group">
+                        <span class="scenario-label">{scenario.label}</span>
+                        <span class="scenario-badge">{scenario.badge}</span>
+                      </div>
                     </div>
+                    <h3>{scenario.title}</h3>
+                    <p>{scenario.body}</p>
+                    <ul class="scenario-points">
+                      {scenario.points.map((point) => (
+                        <li>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
 
-                    <div class="scenario-visual">
-                      {scenario.kind === "code" && (
-                        <div class={`terminal terminal-${scenario.badge}`}>
-                          <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                          <pre><code>{scenario.lines.map((line) => (
-                            <span class="terminal-line">{highlightScenarioLine(line, scenario.badge).map((token) => (
-                              <span class={`code-token ${token.className}`}>{token.text}</span>
-                            ))}</span>
-                          ))}</code></pre>
-                        </div>
-                      )}
+                  <div class="scenario-visual">
+                    {scenario.kind === "code" && scenario.lines && (
+                      <div class={`terminal terminal-${scenario.badge}`}>
+                        <div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                        <pre><code>{scenario.lines.map((line) => (
+                          <span class="terminal-line">{highlightScenarioLine(line, scenario.badge).map((token) => (
+                            <span class={`code-token ${token.className}`}>{token.text}</span>
+                          ))}</span>
+                        ))}</code></pre>
+                      </div>
+                    )}
 
-                      {scenario.kind === "desktop" && (
-                        <div class="desktop-mock">
-                          <div class="mock-sidebar">
-                            <span>Appaloft</span>
-                            <small>Servers</small>
-                            <small>Apps</small>
-                            <small>Deploys</small>
+                    {scenario.kind === "image" && scenario.imageSrc && scenario.imageAlt && (
+                      <figure class={`scenario-shot scenario-shot-${scenario.key}`}>
+                        <img
+                          src={scenario.imageSrc}
+                          alt={scenario.imageAlt}
+                          width="1536"
+                          height="1024"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </figure>
+                    )}
+
+                    {scenario.kind === "cloud" && scenario.metrics && (
+                      <div class="cloud-mock">
+                        {scenario.metrics.map(([name, value]) => (
+                          <div class="cloud-tile">
+                            <span class="cloud-tile-icon" aria-hidden="true" set:html={getScenarioIcon("cloud")}></span>
+                            <span>{name}</span>
+                            <strong>{value}</strong>
                           </div>
-                          <div class="mock-main">
-                            {scenario.cards.map(([name, status, meta]) => (
-                              <div class="mock-row">
-                                <strong>{name}</strong>
-                                <span>{status}</span>
-                                <small>{meta}</small>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {scenario.kind === "chat" && (
-                        <div class="chat-mock">
-                          {scenario.messages.map(([speaker, message]) => (
-                            <div class={speaker === "you" ? "chat-line is-user" : "chat-line"}>
-                              <small>{speaker}</small>
-                              <span>{message}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {scenario.kind === "cloud" && (
-                        <div class="cloud-mock">
-                          {scenario.metrics.map(([name, value]) => (
-                            <div class="cloud-tile">
-                              <span>{name}</span>
-                              <strong>{value}</strong>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
