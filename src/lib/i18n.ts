@@ -141,34 +141,17 @@ export const homeCopy = {
           label: "AI-native",
           title: "让你常用的 AI 通过 skill 直接聊天部署。",
           body: "Appaloft 不提供自己的 AI agent。它更像一条对 AI 友好的 deploy path：把 server、health、deploy 和 logs 暴露给 skill 或 tool 调用，让你继续在熟悉的 AI 里完成操作。",
-          kind: "chat",
+          kind: "image",
           badge: "skill-ready",
           points: [
             "在你自己的 AI 工作流里直接发起部署对话",
             "用 skill 读取环境状态、健康检查和部署记录",
             "继续在原来的聊天上下文里完成发布和排障",
           ],
-          dialogs: [
-            {
-              label: "在你常用的 AI 里",
-              speaker: "user",
-              lines: [
-                "把这个分支部署到我的服务器，先检查 health。",
-                "如果环境正常，就直接发版。",
-              ],
-            },
-            {
-              label: "通过 Appaloft skill",
-              speaker: "skill",
-              lines: [
-                "已检查 Docker、环境变量和 /api/health。",
-                "部署路径可用，随时可以继续发布。",
-              ],
-            },
-          ],
+          dialogs: null,
           lines: null,
-          imageSrc: null,
-          imageAlt: null,
+          imageSrc: "/images/appaloft-ai-native-skill.png",
+          imageAlt: "一个用户常用的 AI 对话窗口与 Appaloft skill 结果窗口并排展示，表现通过 skill 检查健康状态并准备部署。",
           metrics: null,
         },
         {
@@ -374,34 +357,17 @@ export const homeCopy = {
           label: "AI-native",
           title: "Let your preferred AI deploy through a skill.",
           body: "Appaloft does not ship its own AI agent. It is an AI-friendly deploy path that exposes server state, health checks, deploy actions, and logs so you can keep working inside the AI tools you already use.",
-          kind: "chat",
+          kind: "image",
           badge: "skill-ready",
           points: [
             "Start deploy conversations inside your existing AI workflow",
             "Use a skill to read health, environment, and deploy state",
             "Keep release actions and troubleshooting in the same chat context",
           ],
-          dialogs: [
-            {
-              label: "In your AI tool",
-              speaker: "user",
-              lines: [
-                "Deploy this branch to my server and check health first.",
-                "If everything is green, go ahead and ship it.",
-              ],
-            },
-            {
-              label: "With an Appaloft skill",
-              speaker: "skill",
-              lines: [
-                "Docker, env, and /api/health are all checked.",
-                "The deploy path is ready whenever you want to continue.",
-              ],
-            },
-          ],
+          dialogs: null,
           lines: null,
-          imageSrc: null,
-          imageAlt: null,
+          imageSrc: "/images/appaloft-ai-native-skill.png",
+          imageAlt: "A preferred AI chat window sits beside Appaloft skill results showing health checks and deploy readiness.",
           metrics: null,
         },
         {
