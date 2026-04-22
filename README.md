@@ -45,6 +45,7 @@ production are set explicitly with flags, including:
 
 ```text
 --method workspace-commands
+--runtime-name appaloft-preview-<pull-request-number>
 --port 4321
 --upstream-protocol http
 --exposure-mode reverse-proxy
@@ -57,9 +58,9 @@ production are set explicitly with flags, including:
 --require-preview-url
 ```
 
-The preview workflow does not pass a `runtime.name` template on the CLI. Appaloft derives the
-effective preview runtime/container name from trusted pull request context, so preview names still
-follow the `preview-<pull-request-number>` shape without sending an invalid literal template value.
+The preview workflow passes a fully rendered runtime name on the CLI instead of a template literal,
+so preview runtime/container names use `appaloft-preview-<pull-request-number>` without relying on
+runtime-name template rendering at the CLI flag boundary.
 
 Preview URLs use this shape:
 
