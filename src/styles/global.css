@@ -1116,22 +1116,26 @@ h2 {
 
 .scenario-list {
   display: grid;
-  gap: 28px;
+  gap: 0;
+  margin-top: 28px;
 }
 
 .scenario-card {
   display: grid;
   grid-template-columns: minmax(280px, 0.84fr) minmax(0, 1fr);
-  gap: 34px;
-  align-items: center;
-  border: 1px solid var(--border-strong);
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 38%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.92)),
-    var(--card);
-  padding: 34px;
-  box-shadow: 0 24px 54px rgba(24, 24, 27, 0.08);
+  gap: 44px;
+  align-items: start;
+  border-top: 1px solid var(--border-strong);
+  padding: 42px 0;
+}
+
+.scenario-card:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.scenario-card:last-child {
+  padding-bottom: 0;
 }
 
 .scenario-card.is-reversed .scenario-copy {
@@ -1152,48 +1156,46 @@ h2 {
 .scenario-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .scenario-icon {
   display: grid;
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   place-items: center;
-  border: 1px solid rgba(24, 24, 27, 0.08);
-  border-radius: 18px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  border-radius: 12px;
 }
 
 .scenario-icon svg,
 .cloud-tile-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
 }
 
 .scenario-icon-ai {
-  background: linear-gradient(180deg, #eff6ff, #dbeafe);
+  background: rgba(37, 99, 235, 0.08);
   color: #2563eb;
 }
 
 .scenario-icon-docker {
-  background: linear-gradient(180deg, #e0f2fe, #dbeafe);
+  background: rgba(11, 105, 255, 0.08);
   color: #0b69ff;
 }
 
 .scenario-icon-action {
-  background: linear-gradient(180deg, #18181b, #09090b);
-  color: #ffffff;
+  background: rgba(9, 9, 11, 0.07);
+  color: #09090b;
 }
 
 .scenario-icon-desktop {
-  background: linear-gradient(180deg, #fff7ed, #ffedd5);
+  background: rgba(249, 115, 22, 0.08);
   color: #1f2937;
 }
 
 .scenario-icon-cloud {
-  background: linear-gradient(180deg, #eff6ff, #e0f2fe);
+  background: rgba(37, 99, 235, 0.08);
   color: #2563eb;
 }
 
@@ -1206,22 +1208,23 @@ h2 {
 
 .scenario-label {
   color: var(--foreground);
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 900;
   letter-spacing: -0.02em;
 }
 
 .scenario-badge {
   width: fit-content;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
+  border: 0;
+  border-radius: 0;
+  background: none;
   color: var(--foreground-soft);
-  padding: 6px 10px;
+  padding: 0;
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  text-transform: lowercase;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .scenario-copy h3 {
@@ -1274,6 +1277,58 @@ h2 {
 .scenario-visual {
   min-width: 0;
   align-self: center;
+}
+
+.ai-thread {
+  display: grid;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.ai-lane {
+  display: grid;
+  gap: 10px;
+}
+
+.ai-lane.is-user {
+  justify-items: end;
+}
+
+.ai-lane-label {
+  color: var(--muted-foreground);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ai-lane-messages {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 520px);
+}
+
+.ai-bubble {
+  max-width: 100%;
+  border-radius: 22px;
+  padding: 16px 18px;
+  font-size: 1rem;
+  line-height: 1.6;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+.ai-bubble.is-user {
+  border-top-right-radius: 10px;
+  background: linear-gradient(180deg, #e0ecff, #dbeafe);
+  color: #0f172a;
+}
+
+.ai-bubble.is-skill {
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  border-top-left-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.96));
+  color: var(--foreground);
 }
 
 .terminal {
@@ -1389,11 +1444,11 @@ h2 {
   margin: 0;
   overflow: hidden;
   border: 1px solid rgba(24, 24, 27, 0.08);
-  border-radius: 28px;
+  border-radius: 24px;
   background:
     radial-gradient(circle at top center, rgba(251, 191, 36, 0.08), transparent 32%),
     linear-gradient(180deg, #fffdf7, #ffffff);
-  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
 }
 
 .scenario-shot img {
@@ -1409,30 +1464,33 @@ h2 {
 .cloud-mock {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
 }
 
 .cloud-tile {
   display: grid;
-  min-height: 190px;
-  align-content: end;
-  gap: 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: 24px;
-  background:
-    linear-gradient(180deg, rgba(37, 99, 235, 0.14), transparent),
-    var(--card);
-  padding: 22px;
-  box-shadow: 0 16px 40px rgba(24, 24, 27, 0.06);
+  min-height: 0;
+  align-content: start;
+  gap: 10px;
+  border-left: 1px solid var(--border);
+  padding: 0 22px;
+}
+
+.cloud-tile:first-child {
+  border-left: 0;
+  padding-left: 0;
 }
 
 .cloud-tile-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.76);
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.08);
   color: #2563eb;
 }
 
@@ -1503,6 +1561,11 @@ button:focus-visible {
   .compact-heading,
   .scenario-card {
     grid-template-columns: 1fr;
+  }
+
+  .scenario-card.is-reversed .scenario-copy,
+  .scenario-card.is-reversed .scenario-visual {
+    order: initial;
   }
 
   .hero h1 {
@@ -1644,13 +1707,8 @@ button:focus-visible {
   }
 
   .scenario-card {
-    padding: 20px;
     gap: 20px;
-  }
-
-  .scenario-card.is-reversed .scenario-copy,
-  .scenario-card.is-reversed .scenario-visual {
-    order: initial;
+    padding: 28px 0;
   }
 
   .scenario-copy h3 {
@@ -1667,23 +1725,39 @@ button:focus-visible {
   }
 
   .scenario-icon {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
   }
 
   .scenario-icon svg,
   .cloud-tile-icon svg {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .ai-bubble {
+    padding: 14px 16px;
+    font-size: 0.95rem;
   }
 
   .cloud-mock {
     grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
+    border: 0;
   }
 
   .cloud-tile {
-    min-height: 100px;
+    min-height: 0;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 16px 0 0;
+  }
+
+  .cloud-tile:first-child {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .footer-inner {

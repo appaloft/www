@@ -384,6 +384,21 @@ function getScenarioIcon(key: string) {
                       </div>
                     )}
 
+                    {scenario.kind === "chat" && scenario.dialogs && (
+                      <div class="ai-thread" aria-label={scenario.label}>
+                        {scenario.dialogs.map((dialog) => (
+                          <section class={`ai-lane is-${dialog.speaker}`}>
+                            <span class="ai-lane-label">{dialog.label}</span>
+                            <div class="ai-lane-messages">
+                              {dialog.lines.map((line) => (
+                                <div class={`ai-bubble is-${dialog.speaker}`}>{line}</div>
+                              ))}
+                            </div>
+                          </section>
+                        ))}
+                      </div>
+                    )}
+
                     {scenario.kind === "image" && scenario.imageSrc && scenario.imageAlt && (
                       <figure class={`scenario-shot scenario-shot-${scenario.key}`}>
                         <img
